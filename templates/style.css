@@ -550,3 +550,38 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   border-radius: 0;
 }
 .article-content .codeblock pre { background: transparent !important; }
+
+/* tech-notes: compact-left-epigraph-v1 */
+/* Restore the original left-aligned quote, but shorten the space below it. */
+.hero {
+  padding-bottom: 27px;
+}
+.hero .hero-epigraph {
+  display: block;
+  width: auto;
+  max-width: 650px;
+  margin: 26px 0 0;
+  padding: 15px 0 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+  text-align: left;
+}
+.hero .hero-epigraph::before {
+  display: none;
+}
+.hero .hero-epigraph p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.9;
+  letter-spacing: .035em;
+  text-align: left;
+}
+.hero .hero-epigraph cite {
+  margin: 4px 0 0;
+  text-align: left;
+}
+@media (max-width: 760px) {
+  .hero { padding-bottom: 23px; }
+  .hero .hero-epigraph { margin-top: 22px; padding-top: 13px; }
+  .hero .hero-epigraph p { font-size: 14px; }
+}
