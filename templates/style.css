@@ -585,3 +585,22 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   .hero .hero-epigraph { margin-top: 22px; padding-top: 13px; }
   .hero .hero-epigraph p { font-size: 14px; }
 }
+
+/* tech-notes: poem-width-citation-v1 */
+/* Keep the original full-width rule and left position, but align
+   the citation's right edge with the poem text, not the page edge. */
+.hero .hero-epigraph {
+  display: grid;
+  grid-template-columns: fit-content(100%);
+  justify-content: start;
+}
+.hero .hero-epigraph > p {
+  width: max-content;
+  max-width: 100%;
+}
+.hero .hero-epigraph > cite {
+  display: block;
+  width: 100%;
+  text-align: right;
+  justify-self: stretch;
+}
