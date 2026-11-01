@@ -1,0 +1,3563 @@
+<!DOCTYPE html>
+    <html>
+      <head>
+        <meta charset="utf-8" />
+        <meta content="IE=edge" http-equiv="X-UA-Compatible" />
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta content="width=device-width, initial-scale=1, maximum-scale=1" name="viewport" />
+        <title>第3章 垃圾收集器与内存分配策略</title>
+
+        <style>
+          * {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+
+          html {
+            margin: 0;
+            padding: 0;
+          }
+
+          @font-face {
+  font-family: 'mm-iconfont';
+  src: url('data:application/font-woff2;charset=utf-8;base64,d09GMgABAAAAAAVcAA0AAAAADSAAAAUHAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP0ZGVE0cGh4GVgCCShEICo0IigYLGAABNgIkAx4EIAWFLAd0G58KyI7S1LBNkiTFr/P/+6Z638ziLBkIQ8wrsxwEKUmBA4Dwlfarxzy8f+PP7b21ZXFa6IFleXg1a60AqO3LF3jX79fq2xMRxM/jDd1CpYX3FxcP1SqJuY6YNU3FUiQ2jtU11Up8H/EkAATA3TXpGgA83rt/vfLZBDABYQCGcAKRAAxAFXRBBnayKwD+gZ+nPyqFBjBygXL/DlvTIWjwo3cVuK8s9Sl++AEEEjlOjElBk3hilJIMpUKKY21LyxouyaqeWOQjuRrUI+IKdQAY7d9DwI5a04k3MIQFzgG2AOwIKjVqJIrYTsbHABOn6EE+VdOSA1gHO0CS9GBxkMQUvqKqmhP23oxVltyoYu+7Facuv129xJ6zAUpuNJw/Noer8zbl/7HRtyFEqCv9mw2LZ3VXCfF7ULGQwXk1E0zFkant5pHX+SO069xIZQFP7GuSunhzT+uPuaGY8wjz93lhNH9+VyPuCPieEDFvrGZaKEn8By0/Xn3v0RVHUmC89ZOhDlh3jGjeou4WwZ4VRP5wFNIcni96pNDC/qa/zwFLw/qDuH+eGGTtvRnLltyoYu67FceX3+5qwVyZ4I0Xa9BhhYiSnsziTU5ZezSSLTiSYq47FsUXHwcvFjNkwu3NBXzMKiJ/15BtsMQ1xgy5e7/7/fvd7t3pcudO16737nWjDd3v3u16ULnTY0/s1yP0/Scmui+Y0HDii4p2hF3JmehUsiKsiv/3cSrHVX6R/IJJdzYQ9r9pP26TdOc/zP6LnbKg9ZkfiIwv+XOzYQe94qkIvdk05Kn/lyMsmm8KPh98KGQVX3h25WBxRS+vXRVyjG6mfDgvpohyqM+M8zOu6OX0K63v9aXZ8EOl+hM99FbLkGeTpl4Nig85BNS98ahbdCwAz502byvV8h3Wg/UjvlpDaulHWXJ45xmpkR+vfH/c0lR+U6qRDFPFMasTvr+qVeUxFMVUJpGYeohQqEP2nPx5SKO4ooVwruVuCjlnklU9Hy5kSay6LNeiYqv7PjU71+oQWCgHdmB+QcB1t5V7+623sbeXXsGLgy+EbAxegxZ1XtyouW5Ld5F9q9GtCZ11Z2HDJg27dS5c0djIMyrvwL1Elbgmbkv3nTmpbTx5a58ZEeHlIiJmhEeUCw87OCNCZSJMkqK4nWJa+E70KviUNnlpz8pnolu0atLWPDd5Ye+6N0Latm/RSb7VtNuTc6v4gwfcUq568CBa6AgAAAnf3mlYOr2/U+eHZkg41F2gtCyzuA+AhmkRcXiKqLkGv0G0LKl6EWquoiXD9ua35Kvrb/DSahlAIBNQhmOQZyAoDJUTmoihl4lRjTZxhnkgcQ+BzH1GFGkwk5AdnosNwXEIHFUdQBaAiYRpZGJsHhMXZjJI3FUgc8+Bwv1kErqFfbIhLWZBaGw410AjbdshEgwyzrnAYKW8POuMJEDcicMjIvxjg+tAiRK5pAole26Fi4FOXHlGKTbQcPjt4uTbTV5w7sY13AgFgxNUVE4FuIWzBBXLVegDmsd7+xlrL3oZYbQ8lXKUI3lyPYaTxhIJmrG5rmK9vlSCoflfKeQabKRy8CCw7YjReZVGjvRc/8Gn3vEiLOr74PlAfv+1Q9VSHs/l6Tm/nMFjJuLiPNHTGI9vR5xALUQwYDyIsGDESSKZFFJJI908y2iXWzJq0Cj5RDdOO6nFE954+YIpXx1UcFoaLx+TN/EhpYPVt1cBAA==') format('woff2'),
+      url('data:application/font-woff;charset=utf-8;base64,d09GRgABAAAAAAfMAA0AAAAADSAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABGRlRNAAAHsAAAABoAAAAcjQ+WV0dERUYAAAeQAAAAHgAAAB4AKQART1MvMgAAAaAAAABCAAAAVjxwSCNjbWFwAAAB/AAAAEkAAAFK5m7pl2dhc3AAAAeIAAAACAAAAAj//wADZ2x5ZgAAAmAAAAN8AAAGiB3BA0toZWFkAAABMAAAADAAAAA2GiKzS2hoZWEAAAFgAAAAHQAAACQHcAOFaG10eAAAAeQAAAAYAAAAHg2lAQZsb2NhAAACSAAAABgAAAAYB5YI6G1heHAAAAGAAAAAHwAAACABHQB6bmFtZQAABdwAAAFNAAACrJtyy2Nwb3N0AAAHLAAAAFkAAAB0hhp62HjaY2BkYGAA4iTORQfi+W2+MnCzMIDA7a3bl8Nptv8NzJOYG4BcDgYmkCgASEMMAXjaY2BkYGBu+N/AEMPCAALMkxgYGVABCwBRzAL+AAAAeNpjYGRgYOBmyGPgYAABJiDmAkIGhv9gPgMAFOkBmAB42mNgZGFgnMDAysDA1Ml0hoGBoR9CM75mMGLkAIoysDIzYAUBaa4pDA7PGJ8ZMDf8b2CIYW5kaAQKM4LkAN52DA4AAHjaY2GAABYIZmPwBMI8MPRkaAAAEskCuHjaY2BgYGaAYBkGRgYQcAHyGMF8FgYNIM0GpBkZmJ4xPjP4/5+BAUhr/f8vxSR5C6oeCBjZGOAcRiYgwcSAChgZhj0AAM5gCc8AAAAAAAAAAAAAAACYAPQBjgH2Al4CugMSA0R42o1UT2zTdhR+z26c2ooduXbiEIdkjhtnKzRMThuXqI34syKlaDBp1ZD2hwMMkJAojAPigKAwDrtsmjggDcSFcoALEtzWy05rx20r5VAEhx2oYOyI2CVxeT+7JU0h0RTne9/zTy953/f8DL0grFzjv+DPQhxysAU82A374Ss4BoBZNFQFo1YJi2oNvYilYELVk2XLrXhqCdFN6kLULuFQhW61uMf4Fsw7xO11vNDhPvfv4Cji6GDzchi5c83LcV2Pc+fiOqLucyyxGeBthq/fwn8MfmTQ3zrecJM/iyMDjecDI0iRT1HchX1K47miaQqfUvqaM3qW/U1WX4uLIQ+vtgQAeqC+Ms1P8dPQC2kYgCr5ZKmWaued4YLl5jDJPLMtSskzjXwxEmFeHK6hUXaTmzF0iuXcT36C+25KUpr/cOO6cimGaGrN7VoG03N4WJIRZcm/EcZ5SQ6AOG83ZrlfFWlB+UHWGs9009T5m3raPyhL20SFQJJfyFIprKNAfQttfY/Bp/ANnHindxqvEPY+VNFo5Fmk+SfKWQybTqxrfwxL6FlhzkrGaPRGkIdyW3nrnOTq3OmTIpNb15XzciYQmzmDW/P0lBVyVTEWE6shpm05/gRjgigK/quoKEYZx951yepB4MasLD6Mf6/0Nf5edcP0B/PbED/eMSi4GBM1UcZvFQpksbPphfzBhCRUBCmAW2J0WOgVo+WoyCj7eQLm2RR5dmXVsw9hBEZhR8uz4ns8ywuU0jZQ4tgFq32DDCtheaqtcvdp6qdP0niaL8kH+bxs6s0q9f2Y4yNYjfCcP4dVx6UNc/y5IKp4xL++uLuT1KNU8iASQY/jJ1nRg7AYPcf9c2LZv4JTAO16TPgIttNzsLOrnvL/EJSwh98VlNaaI7qZ1v7oruj6rg2KtExa429pmW6KrtbjCwsb9aQhCyVwodJ9PnTyPhHs03Eqj/AT/w4eNwuI/Rn/ahBzrHv27TgR/zfcOckKfsn0s0I8ZhbG68t16jvStosOdV3rvomWS1tEGe2QsZ6XGae3KPFOq3UXf06l/FOGsRbvsatT1zNGKZUqGbP0JbYagIdpAH6aZ47LsAlAxGTFq2HREaIK5uhFUAzeFYaC3Ev/4pe/18flC1//ta8u7Hk6s9TTszQTIFf0Dw1l9u6bv1ZLfPb5wwPzaweEbwCNs0tEeNqNkT9OwzAYxZ/7D9FIHUAwe2IAmv4ZO1Kp7Awd2NrUCa2SOHLcSl04BAMH4Bg9AMfgAD0Fr+HrUpbGyqefn5/fl9gArvADhb/nBo/CCgFehWu4wEa4Tv1TuEHeCTfJx5wWAlUTbuNBxcIBrtWOCapxydl9lXZghVs8CdfQQSxcp/4u3CB/CTfJ38It8l64janqCAe4Ux9UxnAwmMGzLqAxx5Z1iQgWOTsdqqcP7bEzM28Wer7Vy8jmsc095Yyj+8+PLOseTcALsxOskbKP49Qk63Tmztt7jmfKfIeSrsOqxgAh+pSNK5c214Owf17OM3PyKuv0PEreb4IhVc+9mq9jQkaaSJLh36VkjaJaW1GJqIeMNblxx6MrN8nQ+1jHzmZ6wrYmTa0unF2ZyNP8VvUoMEKPIz5JD6vvz2jzvhj1erEEhJHN8AuKq3jTAAAAeNpdiEsOgCAQxXgogp+reChxJnESgUTQ86u4s4smrdLqY6iG+jPWq6HRoIVBBwuHfgoci6Q4h9Ofhg652AWJFFNhkzfmYr2Uxe9P7ULcUFotSX7PDa0DFeMAAAAAAAAB//8AAgABAAAADAAAABYAAAACAAEAAwAKAAEABAAAAAIAAAAAeNpjYGBgZACCq0vUOUD07a3bl8NoAEb7B4YAAA==') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+.mm-iconfont::before {
+  font-family: 'mm-iconfont', sans-serif !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+          .mention[data-type='1']::before,
+          .mention[data-type='3']::before,
+          .mention[data-type='8']::before,
+          .mention[data-type='11']::before,
+          .mention[data-type='12']::before,
+          .mention[data-type='15']::before,
+          .mention[data-type='16']::before {
+            content: '\e62f';
+            display: inline-block;
+            vertical-align: middle;
+            margin-top: -4px;
+            font-size: inherit;
+          }
+          .mention[data-type='3']::before {
+            content: '\e62c';
+          }
+          .mention[data-type='8']::before {
+            content: '\e62d';
+          }
+          .mention[data-type='11']::before {
+            content: '\e62b';
+          }
+          .mention[data-type='12']::before {
+            content: '\e62a';
+          }
+          .mention[data-type='15']::before {
+            content: '\e62e';
+          }
+          .mention[data-type='22']::before {
+            content: '\e602';
+          }
+
+          body {
+            margin: 50px 20px;
+            padding: 0;
+            color: #333;
+            font-family: 'Source Sans Pro', -apple-system, BlinkMacSystemFont, 'PingFang SC',
+                  Helvetica, Arial, 'Microsoft YaHei', 微软雅黑, 黑体, Heiti, sans-serif,
+                  SimSun, 宋体, serif,
+                  'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+          }
+
+          body.narrow {
+            max-width: 790px;
+            margin-left: auto;
+            margin-right: auto;
+            padding-left: 20px;
+            padding-right: 20px;
+          }
+
+          .title {
+            min-height: 40px;
+            padding-left: 10px;
+            padding-bottom: 24px;
+            margin-bottom: 20px;
+            line-height: 40px;
+            font-size: 26px;
+            font-weight: 500;
+            border-bottom: 1px solid #e5e6e8;
+          }
+
+          .node-list {
+            margin: 0 0 0 28px;
+            padding: 0;
+            list-style: none;
+          }
+
+          .node {
+            position: relative;
+          }
+
+          .node.drill-node > .content {
+            margin-bottom: 15px;
+            font-size: 20px;
+            line-height: 28px;
+          }
+
+          .node.drill-node > .note {
+            margin-bottom: 10px;
+          }
+
+          .content {
+            min-height: 24px;
+            padding-top: 2px;
+            padding-bottom: 3px;
+            line-height: 24px;
+            font-size: 16px;
+          }
+
+          .note {
+            position: relative;
+            padding-bottom: 2px;
+            line-height: 22px;
+            font-size: 14px;
+            color: #888;
+            white-space: pre-wrap;
+          }
+
+          .content > *,
+          .note > * {
+            padding-top: 2px;
+            padding-bottom: 2px;
+          }
+
+          .note:empty {
+            padding-bottom: 0;
+          }
+
+          .node.finished .content,
+          .node.finished .note {
+            opacity: 0.5;
+          }
+
+          .node.finished > .content {
+            text-decoration: line-through;
+          }
+
+          .heading1 > .content {
+            min-height: 34px;
+            line-height: 34px;
+            font-size: 24px;
+            font-weight: 500;
+          }
+
+          .heading2 > .content {
+            min-height: 30px;
+            line-height: 30px;
+            font-size: 21px;
+            font-weight: 500;
+          }
+
+          .heading3 > .content {
+            min-height: 27px;
+            line-height: 27px;
+            font-size: 19px;
+            font-weight: 500;
+          }
+
+          .mention {
+            padding-left: 2px;
+            padding-right: 2px;
+            color: #5856d5;
+            word-break: break-all;
+            text-decoration: none;
+          }
+
+          .content-link {
+            color: unset;
+            opacity: 0.6;
+            word-break: break-all;
+          }
+
+          .tag {
+            text-decoration: underline;
+            opacity: 0.6;
+            text-underline-offset: 5px;
+          }
+
+          .bold {
+            font-weight: bold;
+          }
+
+          .italic {
+            font-style: italic;
+          }
+
+          .underline {
+            text-decoration: underline;
+            text-underline-offset: 5px;
+          }
+
+
+          .underline.mask {
+            text-decoration: none;
+            border-bottom: 2px solid #5856d5;
+          }
+
+         .mask {
+            // background-color: #e5e5ff; /* 浅紫色背景 */
+            text-decoration: underline;
+            text-decoration-color: #5856d5;
+            text-decoration-thickness: 2px;
+            text-underline-offset: 5px;
+          }
+
+          .maskEnable .mask:hover {
+            cursor: pointer;
+          }
+
+          .maskEnable .mask {
+            color: transparent !important;
+            -webkit-text-fill-color: transparent !important;
+          }
+
+          .strikethrough {
+            text-decoration: line-through;
+            opacity: 0.5;
+          }
+
+          .strikethrough.underline{
+            text-decoration: line-through underline;
+            text-underline-offset: 5px;
+            opacity: 0.5;
+            border-bottom: 2px solid #5856d5;
+          }
+
+          .strikethrough.mask{
+            text-decoration: line-through;
+            opacity: 0.5;
+            border-bottom: 2px solid #5856d5;
+          }
+
+          .strikethrough.mask.underline{
+            text-decoration: line-through;
+            // opacity: 0.5;
+            border-bottom: 2px solid #5856d5;
+          }
+
+          .content .highlight-red,
+          .highlight-red > .content > * {
+            background-color: #ff8c8c99;
+          }
+
+          .content .highlight-yellow,
+          .highlight-yellow > .content > * {
+            background-color: #ffff2699;
+          }
+
+          .content .highlight-blue,
+          .highlight-blue > .content > * {
+            background-color: #8ce5ff99;
+          }
+
+          .content .highlight-cyan,
+          .highlight-cyan > .content > * {
+            background-color: #a3ffca99;
+          }
+
+          .content .highlight-pink,
+          .highlight-pink > .content > * {
+            background-color: #f3a6ff99;
+          }
+
+          .content .highlight-olive,
+          .highlight-olive > .content > * {
+            background-color: #c8ff8c99;
+          }
+
+          .content .highlight-grey,
+          .highlight-grey > .content > * {
+            background-color: #b1b6be99;
+          }
+
+          /* --- 为PDF打印生成的专用样式 --- */
+          /* 以下颜色是将原始带alpha通道的颜色与白色背景混合后的计算结果 */
+          @media print {
+            .content .highlight-red,
+            .highlight-red > .content > * {
+              /* from #ff8c8c99 */
+              background-color: #ffbaba;
+            }
+
+            .content .highlight-yellow,
+            .highlight-yellow > .content > * {
+              /* from #ffff2699 */
+              background-color: #ffff7d;
+            }
+
+            .content .highlight-blue,
+            .highlight-blue > .content > * {
+              /* from #8ce5ff99 */
+              background-color: #baefff;
+            }
+
+            .content .highlight-cyan,
+            .highlight-cyan > .content > * {
+              /* from #a3ffca99 */
+              background-color: #c8ffdf;
+            }
+
+            .content .highlight-pink,
+            .highlight-pink > .content > * {
+              /* from #f3a6ff99 */
+              background-color: #f8caff;
+            }
+
+            .content .highlight-olive,
+            .highlight-olive > .content > * {
+              /* from #c8ff8c99 */
+              background-color: #deffba;
+            }
+
+            .content .highlight-grey,
+            .highlight-grey > .content > * {
+              /* from #b1b6be99 */
+              background-color: #d0d3d8;
+            }
+          }
+
+          .text-color-red {
+            color: #dc2d1e;
+          }
+
+          .text-color-yellow {
+            color: #ffaf38;
+          }
+
+          .text-color-green {
+            color: #75c940;
+          }
+
+          .text-color-blue {
+            color: #3da8f5;
+          }
+
+          .text-color-purple {
+            color: #797ec9;
+          }
+
+          .bullet {
+            position: absolute;
+            left: -25px;
+            top: 5px;
+            width: 18px;
+            height: 18px;
+            border-radius: 9px;
+          }
+
+          .node.collapsed > .bullet {
+            background-color: #dee0e3;
+          }
+
+          .heading1 > .bullet {
+            top: 10px;
+          }
+
+          .heading2 > .bullet {
+            top: 8px;
+          }
+
+          .heading3 > .bullet {
+            top: 6px;
+          }
+
+          .bullet-dot {
+            position: absolute;
+            left: 6px;
+            top: 6px;
+            width: 6px;
+            height: 6px;
+            background-color: rgb(100, 106, 115);
+            border-radius: 3px;
+          }
+
+          .image-list {
+            position: relative;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+          }
+
+          .image-item {
+            padding-top: 2px;
+            padding-bottom: 8px;
+          }
+
+          .image {
+            display: block;
+            max-width: 100%;
+          }
+
+          .children {
+            position: relative;
+          }
+
+          .note::before,
+          .image-list::before,
+          .children::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -17px;
+            width: 1px;
+            height: 100%;
+            background-color: #dee0e3;
+          }
+
+          .node.drill-node > .note::before,
+          .node.drill-node > .image-list::before,
+          .node.drill-node > .children::before,
+          body.noline .note::before,
+          body.noline .image-list::before,
+          body.noline .children::before {
+            display: none;
+          }
+
+          .node.drill-node > .note,
+          .node.drill-node > .content,
+          .node.drill-node > .image-list,
+          .node.drill-node > .children {
+            margin-left: 10px;
+          }
+
+          body.noline .node-list {
+            margin-right: 20px;
+          }
+
+          .publish {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #666;
+          }
+
+          .publish-link {
+            color: #4694FF;
+          }
+
+          .node .mention.mm-iconfont::before {
+            content: '\e601';
+          }
+
+          .node .mention.mm-iconfont {
+             color: #5856d5;
+          }
+
+          .auto-table {
+            table-layout: auto;
+            // min-width: 100%;
+            border-collapse: collapse;
+            white-space: normal;
+            border: none;
+          }
+
+          .auto-table td,
+          .auto-table th {
+            // min-width: 120px;
+            max-width: 360px;
+            height: 16px; /* 替代min-height */
+            padding: 6px 9px;
+            text-align: start;
+            word-break: break-word;
+            vertical-align: middle;
+            border: 1px solid #bfc0c1;
+            font-weight: normal;
+          }
+
+          /* 为所有单元格设置最小高度 */
+          .auto-table td,
+          .auto-table th {
+            min-height: 16px;
+            height: 16px; /* 默认固定高度 */
+          }
+
+          /* 仅当有实际内容时才允许自动调整高度 */
+          .auto-table td:has(> :not(.column-select-btn, .row-select-btn):not(br):not(:empty)),
+          .auto-table th:has(> :not(.column-select-btn, .row-select-btn):not(br):not(:empty)) {
+            height: auto;
+          }
+
+          .auto-table td,
+          .auto-table th {
+            position: relative; /* 为伪元素定位做准备 */
+            /* 保留其他原有样式 */
+          }
+
+          /* 移除hover时的边框效果 */
+          .auto-table tr.selected-row td::after,
+          .auto-table tr.selected-row th::after,
+          .auto-table .selected-column::after {
+            display: none !important;
+          }
+
+          /* 保留原有的hover效果，但会被上面的规则覆盖 */
+          .auto-table td:hover::after,
+          .auto-table th:hover::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            // border: 2px solid #5856d5;
+            pointer-events: none; /* 确保不会影响交互 */
+            z-index: 1;
+          }
+
+          .selected-row,
+          .selected-column {
+            outline: 2px solid #5856d5;
+            outline-offset: -2px; /* 调整outline与元素边缘的距离 */
+            position: relative;
+            z-index: 1;
+          }
+
+          .selected-column {
+            position: relative;
+            z-index: 1;
+            //background-color: rgba(88, 86, 213, 0.1); /* 可选：添加背景色以突出显示 */
+          }
+
+          /* 移除单个cell的outline */
+          .selected-column {
+            outline: none;
+          }
+
+          /* 在表格上添加一个伪元素来创建整列的外框 */
+          table {
+            position: relative;
+          }
+
+          table::after {
+            content: '';
+            position: absolute;
+            z-index: 2;
+            pointer-events: none;
+            top: 0;
+            bottom: 0;
+            outline: 2px solid #5856d5;
+            /* 宽度和位置会通过JavaScript动态设置 */
+            left: var(--column-left, 0);
+            width: var(--column-width, 0);
+            /* 添加这行来控制显示/隐藏 */
+            display: var(--column-display, none);
+          }
+
+          .column-select-btn,
+          .row-select-btn {
+            position: absolute;
+            background-color: #f4f4f5; /* 默认/hover状态的背景色 */
+            color: #bfc0c1; /* 默认/hover状态的文字颜色 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s, background-color 0.2s, color 0.2s;
+            z-index: 10;
+            border-radius: 4px;
+            font-size: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            user-select: none; /* 防止选中文本 */
+            -webkit-user-select: none; /* Safari 支持 */
+            -moz-user-select: none; /* Firefox 支持 */
+            -ms-user-select: none; /* IE/Edge 支持 */
+            pointer-events: auto; /* 确保点击事件生效 */
+          }
+
+          .column-select-btn {
+            /* 修改位置计算方式，确保完全显示 */
+            top: 0;
+            left: 50%;
+            width: 24px;
+            height: 16px;
+            transform: translate(-50%, -50%); /* 改为向上偏移半个高度 */
+          }
+
+          .row-select-btn {
+            /* 修改位置计算方式，确保完全显示 */
+            left: 0;
+            top: 50%;
+            width: 16px;
+            height: 24px;
+            transform: translate(-50%, -50%); /* 改为向左偏移半个宽度 */
+          }
+
+          /* 阻止内部被编辑 */
+          .column-select-btn:focus,
+          .row-select-btn:focus {
+            outline: none;
+          }
+
+          /* 悬停时显示 */
+          td:hover .column-select-btn,
+          td:hover .row-select-btn,
+          th:hover .column-select-btn,
+          th:hover .row-select-btn {
+            opacity: 1;
+          }
+
+          /* 选中状态 */
+          .column-select-btn.selected,
+          .row-select-btn.selected {
+            background-color: #5856d5;
+            color: white;
+            opacity: 1; /* 确保选中状态始终可见 */
+          }
+
+          /* 提供按钮图标 */
+          .column-select-btn::after {
+            content: '⋯';
+          }
+
+          .row-select-btn::after {
+            content: '⋮';
+          }
+
+          .auto-table u {
+            text-underline-offset: 5px;
+          }
+
+          .editable-text-area {
+            outline: none;
+            min-height: 1.2em;
+          }
+
+          /* table-styles.css */
+
+          /* 不可编辑表格的样式 */
+          .non-editable {
+            user-select: none !important; /* 禁止选择文本 */
+            -webkit-user-select: none !important; /* Safari 支持 */
+            -moz-user-select: none !important; /* Firefox 支持 */
+            -ms-user-select: none !important; /* IE/Edge 支持 */
+            cursor: default !important; /* 使用默认光标 */
+          }
+
+          /* 仅表格内容不可交互，但保留容器的滚动功能 */
+          .non-editable table,
+          .non-editable thead,
+          .non-editable tbody,
+          .non-editable tr,
+          .non-editable th,
+          .non-editable td {
+            pointer-events: none !important;
+            user-select: none !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            cursor: default !important;
+            outline: none !important; /* 防止获得焦点时出现轮廓 */
+          }
+
+          /* 表格容器允许滚动 */
+        .table-container {
+          overflow-x: auto !important; /* 启用水平滚动 */
+          width: 100%;
+          margin-top: 0;
+          margin-bottom: 0;
+          margin-right: 0;
+          padding: 8px !important;
+
+          max-width: 100%; /* 确保容器不会超出父元素 */
+          pointer-events: auto !important; /* 允许容器的交互，包括滚动 */
+          margin-left: -7px;
+        }
+
+
+          /* 强制所有表格相关元素不可编辑 */
+          table [contenteditable='false'] {
+            -webkit-user-modify: read-only !important; /* Safari 特定属性 */
+            -moz-user-modify: read-only !important; /* Firefox 特定属性 */
+            user-modify: read-only !important;
+            -webkit-user-select: none !important;
+            -moz-user-select: none !important;
+            -ms-user-select: none !important;
+            user-select: none !important;
+          }
+
+
+          .task-checkbox {
+            position: absolute;
+            display: flex;
+            // left: 27px;
+            width: 18px;
+            height: 18px;
+            line-height: 24px;
+            z-index: 2;
+            top: 5px;
+            justify-content: flex-end;
+            appearance: none;
+            -webkit-appearance: none;
+            margin: 0;
+            cursor: pointer;
+          }
+
+          .task-checkbox-svg {
+            display: block;
+          }
+          .task-content {
+            margin-left: 21px;
+          }
+
+          .task-checkbox:focus-visible {
+            outline: none;
+          }
+
+          .task-content-completed {
+            // color: #bfc0c1 !important;
+            opacity: 0.5;
+            text-decoration: line-through;
+          }
+          .task-checkbox-container-div {
+            position: inherit;
+            z-index: 2;
+            width: 18px;
+            height: 18px;
+            line-height: 1; /* 避免 line-height 影响布局 */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+          }
+
+          .task-checkbox-container-div[contenteditable='false'] .task-checkbox {
+            pointer-events: none;
+            z-index: 2;
+          }
+
+          .task-checkbox-container {
+            display: inline-flex;
+            align-items: center;
+            position: absolute;
+            height: 29px;
+          }
+
+          .task-date-container {
+            display: inline-flex;
+            white-space: nowrap;
+            align-items: center;
+            pointer-events: auto;
+            cursor: pointer;
+            color: #7f7f7d;
+            padding: 0px 0px;
+            vertical-align: middle; /* 或者 top, bottom 都可以试试 */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+          }
+
+          // .task-content::before {
+          //   content: ''; /* 或者 content: '200B'; 使用零宽度空格 */
+          //   display: inline-block; /* 确保它在文档流中占据一个位置 */
+          //   width: 0;
+          // }
+
+          .task-date-container * {
+            /* 使用通配符 * 确保所有子元素都不可选 */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+          }
+
+          .task-date-overdue {
+            color: #ef042a;
+          }
+
+          .icon-calendar {
+            opacity: 0;
+          }
+
+          // .content:hover .icon-calendar,
+          // .content:focus .icon-calendar {
+          //   opacity: 1;
+          // }
+
+          @media (hover: none) {
+            .content:focus .icon-calendar {
+              opacity: 1;
+            }
+          }
+
+          /* 仅在支持 hover 的设备上（如桌面端），使用 hover 来显示图标 */
+          @media (hover: hover) {
+            .content:hover .icon-calendar {
+              opacity: 1;
+            }
+          }
+
+          .task-deadline-wrapper {
+            display: inline-flex;
+            align-items: center;
+            background-color: #f0efee80;
+            border-radius: 999px;
+            padding: 0px 6px;
+            font-size: 12px !important;
+            height: 20px;
+            margin-left: 4px;
+            margin-bottom: 2px;
+          }
+
+          /* 日历图标-没有时间 */
+          .icon-calendar {
+            display: inline-block;
+            position: relative;
+            width: 18px;
+            height: 18px;
+            margin-left: 12px;
+            margin-bottom: 2px;
+            // top: 3px;
+            // vertical-align: 2px; /* 方便和文字对齐 */
+
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10.667 12.667H14.667' stroke='%2375757D' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M10.667 1.333V4' stroke='%2375757D' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M12.667 10.667V14.667' stroke='%2375757D' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M14 8.399V4c0-.354-.14-.693-.39-.943s-.587-.39-1.027-.39H3.333c-.44 0-.779.14-1.027.39S2 3.646 2 4v9.333c0 .354.14.693.39.943s.587.39 1.027.39H9' stroke='%2375757D' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M2 6.667H14' stroke='%2375757D' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M5.333 1.333V4' stroke='%2375757D' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+          }
+
+          /* 日历图标-已有时间*/
+          // .icon-calendar-with-date {
+          //   display: inline-block;
+          //   position: relative;
+          //   width: 18px;
+          //   height: 18px;
+          //   // top: 3px;
+          //   vertical-align: middle;
+
+          //   background-color: var(--color);
+          //   mask-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.21727 16C3.47818 16 2.92269 15.8164 2.55079 15.4492C2.1836 15.0867 2 14.5406 2 13.811V4.18903C2 3.45935 2.1836 2.91327 2.55079 2.55079C2.92269 2.1836 3.47818 2 4.21727 2H13.8631C14.6022 2 15.1554 2.1836 15.5225 2.55079C15.8897 2.91327 16.0733 3.45935 16.0733 4.18903V13.811C16.0733 14.5406 15.8897 15.0867 15.5225 15.4492C15.1554 15.8164 14.6022 16 13.8631 16H4.21727ZM4.11135 14.8631H13.9549C14.2703 14.8631 14.5128 14.7784 14.6822 14.6089C14.8517 14.4441 14.9364 14.1993 14.9364 13.8745V6.21564C14.9364 5.89082 14.8517 5.64603 14.6822 5.48126C14.5128 5.31179 14.2703 5.22705 13.9549 5.22705H4.11135C3.80065 5.22705 3.56056 5.31179 3.39109 5.48126C3.22162 5.64603 3.13688 5.89082 3.13688 6.21564V13.8745C3.13688 14.1993 3.22162 14.4441 3.39109 14.6089C3.56056 14.7784 3.80065 14.8631 4.11135 14.8631ZM7.66323 7.76915C7.54083 7.76915 7.45374 7.74561 7.40196 7.69853C7.35488 7.65146 7.33134 7.56672 7.33134 7.44432V7.0277C7.33134 6.9053 7.35488 6.82292 7.40196 6.78055C7.45374 6.73348 7.54083 6.70994 7.66323 6.70994H8.07985C8.20225 6.70994 8.28698 6.73348 8.33406 6.78055C8.38584 6.82292 8.41173 6.9053 8.41173 7.0277V7.44432C8.41173 7.56672 8.38584 7.65146 8.33406 7.69853C8.28698 7.74561 8.20225 7.76915 8.07985 7.76915H7.66323ZM10.0076 7.76915C9.88521 7.76915 9.80047 7.74561 9.7534 7.69853C9.70632 7.65146 9.68278 7.56672 9.68278 7.44432V7.0277C9.68278 6.9053 9.70632 6.82292 9.7534 6.78055C9.80047 6.73348 9.88521 6.70994 10.0076 6.70994H10.4242C10.5513 6.70994 10.6384 6.73348 10.6855 6.78055C10.7326 6.82292 10.7561 6.9053 10.7561 7.0277V7.44432C10.7561 7.56672 10.7326 7.65146 10.6855 7.69853C10.6384 7.74561 10.5513 7.76915 10.4242 7.76915H10.0076ZM12.359 7.76915C12.2319 7.76915 12.1448 7.74561 12.0978 7.69853C12.0507 7.65146 12.0272 7.56672 12.0272 7.44432V7.0277C12.0272 6.9053 12.0507 6.82292 12.0978 6.78055C12.1448 6.73348 12.2319 6.70994 12.359 6.70994H12.7686C12.8957 6.70994 12.9828 6.73348 13.0299 6.78055C13.077 6.82292 13.1005 6.9053 13.1005 7.0277V7.44432C13.1005 7.56672 13.077 7.65146 13.0299 7.69853C12.9828 7.74561 12.8957 7.76915 12.7686 7.76915H12.359ZM5.31885 10.0782C5.19174 10.0782 5.10465 10.0547 5.05758 10.0076C5.0105 9.96053 4.98696 9.87579 4.98696 9.7534V9.34384C4.98696 9.21673 5.0105 9.13199 5.05758 9.08963C5.10465 9.04255 5.19174 9.01901 5.31885 9.01901H5.73547C5.85787 9.01901 5.9426 9.04255 5.98968 9.08963C6.03676 9.13199 6.06029 9.21673 6.06029 9.34384V9.7534C6.06029 9.87579 6.03676 9.96053 5.98968 10.0076C5.9426 10.0547 5.85787 10.0782 5.73547 10.0782H5.31885ZM7.66323 10.0782C7.54083 10.0782 7.45374 10.0547 7.40196 10.0076C7.35488 9.96053 7.33134 9.87579 7.33134 9.7534V9.34384C7.33134 9.21673 7.35488 9.13199 7.40196 9.08963C7.45374 9.04255 7.54083 9.01901 7.66323 9.01901H8.07985C8.20225 9.01901 8.28698 9.04255 8.33406 9.08963C8.38584 9.13199 8.41173 9.21673 8.41173 9.34384V9.7534C8.41173 9.87579 8.38584 9.96053 8.33406 10.0076C8.28698 10.0547 8.20225 10.0782 8.07985 10.0782H7.66323ZM10.0076 10.0782C9.88521 10.0782 9.80047 10.0547 9.7534 10.0076C9.70632 9.96053 9.68278 9.87579 9.68278 9.7534V9.34384C9.68278 9.21673 9.70632 9.13199 9.7534 9.08963C9.80047 9.04255 9.88521 9.01901 10.0076 9.01901H10.4242C10.5513 9.01901 10.6384 9.04255 10.6855 9.08963C10.7326 9.13199 10.7561 9.21673 10.7561 9.34384V9.7534C10.7561 9.87579 10.7326 9.96053 10.6855 10.0076C10.6384 10.0547 10.5513 10.0782 10.4242 10.0782H10.0076ZM12.359 10.0782C12.2319 10.0782 12.1448 10.0547 12.0978 10.0076C12.0507 9.96053 12.0272 9.87579 12.0272 9.7534V9.34384C12.0272 9.21673 12.0507 9.13199 12.0978 9.08963C12.1448 9.04255 12.2319 9.01901 12.359 9.01901H12.7686C12.8957 9.01901 12.9828 9.04255 13.0299 9.08963C13.077 9.13199 13.1005 9.21673 13.1005 9.34384V9.7534C13.1005 9.87579 13.077 9.96053 13.0299 10.0076C12.9828 10.0547 12.8957 10.0782 12.7686 10.0782H12.359ZM5.31885 12.3873C5.19174 12.3873 5.10465 12.3661 5.05758 12.3237C5.0105 12.2767 4.98696 12.1896 4.98696 12.0625V11.6529C4.98696 11.5258 5.0105 11.4411 5.05758 11.3987C5.10465 11.3516 5.19174 11.3281 5.31885 11.3281H5.73547C5.85787 11.3281 5.9426 11.3516 5.98968 11.3987C6.03676 11.4411 6.06029 11.5258 6.06029 11.6529V12.0625C6.06029 12.1896 6.03676 12.2767 5.98968 12.3237C5.9426 12.3661 5.85787 12.3873 5.73547 12.3873H5.31885ZM7.66323 12.3873C7.54083 12.3873 7.45374 12.3661 7.40196 12.3237C7.35488 12.2767 7.33134 12.1896 7.33134 12.0625V11.6529C7.33134 11.5258 7.35488 11.4411 7.40196 11.3987C7.45374 11.3516 7.54083 11.3281 7.66323 11.3281H8.07985C8.20225 11.3281 8.28698 11.3516 8.33406 11.3987C8.38584 11.4411 8.41173 11.5258 8.41173 11.6529V12.0625C8.41173 12.1896 8.38584 12.2767 8.33406 12.3237C8.28698 12.3661 8.20225 12.3873 8.07985 12.3873H7.66323ZM10.0076 12.3873C9.88521 12.3873 9.80047 12.3661 9.7534 12.3237C9.70632 12.2767 9.68278 12.1896 9.68278 12.0625V11.6529C9.68278 11.5258 9.70632 11.4411 9.7534 11.3987C9.80047 11.3516 9.88521 11.3281 10.0076 11.3281H10.4242C10.5513 11.3281 10.6384 11.3516 10.6855 11.3987C10.7326 11.4411 10.7561 11.5258 10.7561 11.6529V12.0625C10.7561 12.1896 10.7326 12.2767 10.6855 12.3237C10.6384 12.3661 10.5513 12.3873 10.4242 12.3873H10.0076Z' fill='%2375757D'/%3E%3C/svg%3E");
+
+          //   /* 确保蒙版完全显示 */
+          //   mask-repeat: no-repeat;
+          //   mask-position: center;
+          //   mask-size: contain;
+
+          //   /* 为了兼容性，有时需要 -webkit- 前缀 */
+          //   -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.21727 16C3.47818 16 2.92269 15.8164 2.55079 15.4492C2.1836 15.0867 2 14.5406 2 13.811V4.18903C2 3.45935 2.1836 2.91327 2.55079 2.55079C2.92269 2.1836 3.47818 2 4.21727 2H13.8631C14.6022 2 15.1554 2.1836 15.5225 2.55079C15.8897 2.91327 16.0733 3.45935 16.0733 4.18903V13.811C16.0733 14.5406 15.8897 15.0867 15.5225 15.4492C15.1554 15.8164 14.6022 16 13.8631 16H4.21727ZM4.11135 14.8631H13.9549C14.2703 14.8631 14.5128 14.7784 14.6822 14.6089C14.8517 14.4441 14.9364 14.1993 14.9364 13.8745V6.21564C14.9364 5.89082 14.8517 5.64603 14.6822 5.48126C14.5128 5.31179 14.2703 5.22705 13.9549 5.22705H4.11135C3.80065 5.22705 3.56056 5.31179 3.39109 5.48126C3.22162 5.64603 3.13688 5.89082 3.13688 6.21564V13.8745C3.13688 14.1993 3.22162 14.4441 3.39109 14.6089C3.56056 14.7784 3.80065 14.8631 4.11135 14.8631ZM7.66323 7.76915C7.54083 7.76915 7.45374 7.74561 7.40196 7.69853C7.35488 7.65146 7.33134 7.56672 7.33134 7.44432V7.0277C7.33134 6.9053 7.35488 6.82292 7.40196 6.78055C7.45374 6.73348 7.54083 6.70994 7.66323 6.70994H8.07985C8.20225 6.70994 8.28698 6.73348 8.33406 6.78055C8.38584 6.82292 8.41173 6.9053 8.41173 7.0277V7.44432C8.41173 7.56672 8.38584 7.65146 8.33406 7.69853C8.28698 7.74561 8.20225 7.76915 8.07985 7.76915H7.66323ZM10.0076 7.76915C9.88521 7.76915 9.80047 7.74561 9.7534 7.69853C9.70632 7.65146 9.68278 7.56672 9.68278 7.44432V7.0277C9.68278 6.9053 9.70632 6.82292 9.7534 6.78055C9.80047 6.73348 9.88521 6.70994 10.0076 6.70994H10.4242C10.5513 6.70994 10.6384 6.73348 10.6855 6.78055C10.7326 6.82292 10.7561 6.9053 10.7561 7.0277V7.44432C10.7561 7.56672 10.7326 7.65146 10.6855 7.69853C10.6384 7.74561 10.5513 7.76915 10.4242 7.76915H10.0076ZM12.359 7.76915C12.2319 7.76915 12.1448 7.74561 12.0978 7.69853C12.0507 7.65146 12.0272 7.56672 12.0272 7.44432V7.0277C12.0272 6.9053 12.0507 6.82292 12.0978 6.78055C12.1448 6.73348 12.2319 6.70994 12.359 6.70994H12.7686C12.8957 6.70994 12.9828 6.73348 13.0299 6.78055C13.077 6.82292 13.1005 6.9053 13.1005 7.0277V7.44432C13.1005 7.56672 13.077 7.65146 13.0299 7.69853C12.9828 7.74561 12.8957 7.76915 12.7686 7.76915H12.359ZM5.31885 10.0782C5.19174 10.0782 5.10465 10.0547 5.05758 10.0076C5.0105 9.96053 4.98696 9.87579 4.98696 9.7534V9.34384C4.98696 9.21673 5.0105 9.13199 5.05758 9.08963C5.10465 9.04255 5.19174 9.01901 5.31885 9.01901H5.73547C5.85787 9.01901 5.9426 9.04255 5.98968 9.08963C6.03676 9.13199 6.06029 9.21673 6.06029 9.34384V9.7534C6.06029 9.87579 6.03676 9.96053 5.98968 10.0076C5.9426 10.0547 5.85787 10.0782 5.73547 10.0782H5.31885ZM7.66323 10.0782C7.54083 10.0782 7.45374 10.0547 7.40196 10.0076C7.35488 9.96053 7.33134 9.87579 7.33134 9.7534V9.34384C7.33134 9.21673 7.35488 9.13199 7.40196 9.08963C7.45374 9.04255 7.54083 9.01901 7.66323 9.01901H8.07985C8.20225 9.01901 8.28698 9.04255 8.33406 9.08963C8.38584 9.13199 8.41173 9.21673 8.41173 9.34384V9.7534C8.41173 9.87579 8.38584 9.96053 8.33406 10.0076C8.28698 10.0547 8.20225 10.0782 8.07985 10.0782H7.66323ZM10.0076 10.0782C9.88521 10.0782 9.80047 10.0547 9.7534 10.0076C9.70632 9.96053 9.68278 9.87579 9.68278 9.7534V9.34384C9.68278 9.21673 9.70632 9.13199 9.7534 9.08963C9.80047 9.04255 9.88521 9.01901 10.0076 9.01901H10.4242C10.5513 9.01901 10.6384 9.04255 10.6855 9.08963C10.7326 9.13199 10.7561 9.21673 10.7561 9.34384V9.7534C10.7561 9.87579 10.7326 9.96053 10.6855 10.0076C10.6384 10.0547 10.5513 10.0782 10.4242 10.0782H10.0076ZM12.359 10.0782C12.2319 10.0782 12.1448 10.0547 12.0978 10.0076C12.0507 9.96053 12.0272 9.87579 12.0272 9.7534V9.34384C12.0272 9.21673 12.0507 9.13199 12.0978 9.08963C12.1448 9.04255 12.2319 9.01901 12.359 9.01901H12.7686C12.8957 9.01901 12.9828 9.04255 13.0299 9.08963C13.077 9.13199 13.1005 9.21673 13.1005 9.34384V9.7534C13.1005 9.87579 13.077 9.96053 13.0299 10.0076C12.9828 10.0547 12.8957 10.0782 12.7686 10.0782H12.359ZM5.31885 12.3873C5.19174 12.3873 5.10465 12.3661 5.05758 12.3237C5.0105 12.2767 4.98696 12.1896 4.98696 12.0625V11.6529C4.98696 11.5258 5.0105 11.4411 5.05758 11.3987C5.10465 11.3516 5.19174 11.3281 5.31885 11.3281H5.73547C5.85787 11.3281 5.9426 11.3516 5.98968 11.3987C6.03676 11.4411 6.06029 11.5258 6.06029 11.6529V12.0625C6.06029 12.1896 6.03676 12.2767 5.98968 12.3237C5.9426 12.3661 5.85787 12.3873 5.73547 12.3873H5.31885ZM7.66323 12.3873C7.54083 12.3873 7.45374 12.3661 7.40196 12.3237C7.35488 12.2767 7.33134 12.1896 7.33134 12.0625V11.6529C7.33134 11.5258 7.35488 11.4411 7.40196 11.3987C7.45374 11.3516 7.54083 11.3281 7.66323 11.3281H8.07985C8.20225 11.3281 8.28698 11.3516 8.33406 11.3987C8.38584 11.4411 8.41173 11.5258 8.41173 11.6529V12.0625C8.41173 12.1896 8.38584 12.2767 8.33406 12.3237C8.28698 12.3661 8.20225 12.3873 8.07985 12.3873H7.66323ZM10.0076 12.3873C9.88521 12.3873 9.80047 12.3661 9.7534 12.3237C9.70632 12.2767 9.68278 12.1896 9.68278 12.0625V11.6529C9.68278 11.5258 9.70632 11.4411 9.7534 11.3987C9.80047 11.3516 9.88521 11.3281 10.0076 11.3281H10.4242C10.5513 11.3281 10.6384 11.3516 10.6855 11.3987C10.7326 11.4411 10.7561 11.5258 10.7561 11.6529V12.0625C10.7561 12.1896 10.7326 12.2767 10.6855 12.3237C10.6384 12.3661 10.5513 12.3873 10.4242 12.3873H10.0076Z' fill='%2375757D'/%3E%3C/svg%3E");
+          //   -webkit-mask-repeat: no-repeat;
+          //   -webkit-mask-position: center;
+          //   -webkit-mask-size: contain;
+          // }
+
+          // /* 日历图标 */
+          // .icon-calendar-with-date:hover,
+          .icon-calendar:hover {
+            display: inline-block;
+            position: relative;
+            width: 18px;
+            height: 18px;
+            margin-left: 12px;
+            margin-bottom: 2px;
+            // top: 3px;
+            vertical-align: middle; /* 方便和文字对齐 */
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: contain;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M10.667 12.667H14.667' stroke='%231D1D1F' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M10.667 1.333V4' stroke='%231D1D1F' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M12.667 10.667V14.667' stroke='%231D1D1F' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M14 8.399V4c0-.354-.14-.693-.39-.943s-.587-.39-1.027-.39H3.333c-.44 0-.779.14-1.027.39S2 3.646 2 4v9.333c0 .354.14.693.39.943s.587.39 1.027.39H9' stroke='%231D1D1F' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M2 6.667H14' stroke='%231D1D1F' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M5.333 1.333V4' stroke='%231D1D1F' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+            mask-image: none;
+            background-color: #00000000;
+          }
+
+          /* 闹钟图标 */
+          .icon-alarm {
+            display: inline-block;
+            position: relative;
+            width: 12px;
+            height: 12px;
+            // top: 1.45px;
+            vertical-align: middle;
+
+            background-color: var(--color);
+            mask-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8.95323 16.0009C8.0622 16.0009 7.22742 15.8322 6.44889 15.4946C5.67036 15.1616 4.98409 14.7004 4.39007 14.1108C3.80055 13.5168 3.33703 12.8306 2.99952 12.052C2.66651 11.2735 2.5 10.4387 2.5 9.54769C2.5 8.65665 2.66651 7.82187 2.99952 7.04335C3.33703 6.26032 3.80055 5.57404 4.39007 4.98452C4.98409 4.3905 5.67036 3.92698 6.44889 3.59397C7.22742 3.25646 8.0622 3.0877 8.95323 3.0877C9.84426 3.0877 10.679 3.25646 11.4576 3.59397C12.2406 3.92698 12.9269 4.3905 13.5164 4.98452C14.1104 5.57404 14.5739 6.26032 14.9069 7.04335C15.24 7.82187 15.4065 8.65665 15.4065 9.54769C15.4065 10.4387 15.24 11.2735 14.9069 12.052C14.5739 12.8306 14.1104 13.5168 13.5164 14.1108C12.9269 14.7004 12.2406 15.1616 11.4576 15.4946C10.679 15.8322 9.84426 16.0009 8.95323 16.0009ZM8.95323 14.8466C9.68226 14.8466 10.3663 14.7094 11.0053 14.4349C11.6488 14.1604 12.2136 13.7801 12.6996 13.2941C13.1856 12.8081 13.5659 12.2455 13.8404 11.6065C14.1149 10.963 14.2522 10.2767 14.2522 9.54769C14.2522 8.81416 14.1149 8.12788 13.8404 7.48886C13.5659 6.84984 13.1856 6.28732 12.6996 5.8013C12.2136 5.31528 11.6488 4.93502 11.0053 4.66051C10.3663 4.386 9.68226 4.24875 8.95323 4.24875C8.2197 4.24875 7.53343 4.386 6.89441 4.66051C6.25538 4.93502 5.69286 5.31528 5.20685 5.8013C4.72083 6.28732 4.34057 6.84984 4.06606 7.48886C3.79155 8.12788 3.65429 8.81416 3.65429 9.54769C3.65429 10.2767 3.79155 10.963 4.06606 11.6065C4.34057 12.2455 4.72083 12.8081 5.20685 13.2941C5.69286 13.7801 6.25538 14.1604 6.89441 14.4349C7.53343 14.7094 8.2197 14.8466 8.95323 14.8466ZM3.41128 4.82252C3.32578 4.82252 3.24928 4.80002 3.18177 4.75501C3.11427 4.70551 3.06252 4.63801 3.02652 4.55251C2.99052 4.476 2.96127 4.37925 2.93877 4.26225C2.92077 4.14524 2.91176 4.02374 2.91176 3.89773C2.91176 3.54672 2.99502 3.22946 3.16152 2.94595C3.33253 2.65794 3.56204 2.42843 3.85005 2.25742C4.13806 2.08642 4.45757 2.00092 4.80858 2.00092C5.01109 2.00092 5.21585 2.03242 5.42285 2.09542C5.62986 2.15392 5.79862 2.24167 5.92912 2.35868C6.05063 2.47118 6.11138 2.59269 6.11138 2.72319C6.11138 2.8402 6.05513 2.94145 5.94262 3.02695L3.68129 4.73476C3.63179 4.77076 3.58679 4.79552 3.54629 4.80902C3.50579 4.81802 3.46078 4.82252 3.41128 4.82252ZM14.4952 4.82252C14.4457 4.82252 14.4007 4.81802 14.3602 4.80902C14.3197 4.79552 14.2747 4.77076 14.2252 4.73476L11.9706 3.02695C11.8536 2.94145 11.7951 2.8402 11.7951 2.72319C11.7951 2.59269 11.8558 2.47118 11.9773 2.35868C12.1078 2.24167 12.2766 2.15392 12.4836 2.09542C12.6906 2.03242 12.8954 2.00092 13.0979 2.00092C13.4489 2.00092 13.7684 2.08642 14.0564 2.25742C14.3444 2.42843 14.5717 2.65794 14.7382 2.94595C14.9092 3.22946 14.9947 3.54672 14.9947 3.89773C14.9947 4.02374 14.9857 4.14749 14.9677 4.269C14.9497 4.386 14.9227 4.4805 14.8867 4.55251C14.8462 4.63351 14.7922 4.69876 14.7247 4.74826C14.6572 4.79777 14.5807 4.82252 14.4952 4.82252ZM3.31003 15.8052C3.21103 15.7107 3.16152 15.5914 3.16152 15.4474C3.16152 15.3034 3.21328 15.1796 3.31678 15.0761L4.59933 13.8071L5.32835 14.5294L4.05256 15.7984C3.94905 15.9064 3.82305 15.9604 3.67454 15.9604C3.53054 15.9604 3.40903 15.9087 3.31003 15.8052ZM14.5964 15.8052C14.4974 15.9087 14.3737 15.9604 14.2252 15.9604C14.0812 15.9604 13.9574 15.9064 13.8539 15.7984L12.5849 14.5294L13.3071 13.8071L14.5897 15.0761C14.6977 15.1796 14.7494 15.3034 14.7449 15.4474C14.7449 15.5914 14.6954 15.7107 14.5964 15.8052ZM5.88187 10.2902C5.75137 10.2902 5.64111 10.2452 5.55111 10.1552C5.46111 10.0652 5.4161 9.95495 5.4161 9.82445C5.4161 9.68944 5.46111 9.57694 5.55111 9.48693C5.64111 9.39693 5.75137 9.35193 5.88187 9.35193H8.48071V5.7338C8.48071 5.59879 8.52572 5.48629 8.61572 5.39629C8.70572 5.30628 8.81598 5.26128 8.94648 5.26128C9.08149 5.26128 9.19399 5.30628 9.28399 5.39629C9.374 5.48629 9.419 5.59879 9.419 5.7338V9.82445C9.419 9.95495 9.374 10.0652 9.28399 10.1552C9.19399 10.2452 9.08149 10.2902 8.94648 10.2902H5.88187Z' fill='%2375757D'/%3E%3C/svg%3E");
+
+            /* 确保蒙版完全显示 */
+            mask-repeat: no-repeat;
+            mask-position: center;
+            mask-size: contain;
+
+            /* 为了兼容性，有时需要 -webkit- 前缀 */
+            -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='18' height='18' viewBox='0 0 18 18' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M8.95323 16.0009C8.0622 16.0009 7.22742 15.8322 6.44889 15.4946C5.67036 15.1616 4.98409 14.7004 4.39007 14.1108C3.80055 13.5168 3.33703 12.8306 2.99952 12.052C2.66651 11.2735 2.5 10.4387 2.5 9.54769C2.5 8.65665 2.66651 7.82187 2.99952 7.04335C3.33703 6.26032 3.80055 5.57404 4.39007 4.98452C4.98409 4.3905 5.67036 3.92698 6.44889 3.59397C7.22742 3.25646 8.0622 3.0877 8.95323 3.0877C9.84426 3.0877 10.679 3.25646 11.4576 3.59397C12.2406 3.92698 12.9269 4.3905 13.5164 4.98452C14.1104 5.57404 14.5739 6.26032 14.9069 7.04335C15.24 7.82187 15.4065 8.65665 15.4065 9.54769C15.4065 10.4387 15.24 11.2735 14.9069 12.052C14.5739 12.8306 14.1104 13.5168 13.5164 14.1108C12.9269 14.7004 12.2406 15.1616 11.4576 15.4946C10.679 15.8322 9.84426 16.0009 8.95323 16.0009ZM8.95323 14.8466C9.68226 14.8466 10.3663 14.7094 11.0053 14.4349C11.6488 14.1604 12.2136 13.7801 12.6996 13.2941C13.1856 12.8081 13.5659 12.2455 13.8404 11.6065C14.1149 10.963 14.2522 10.2767 14.2522 9.54769C14.2522 8.81416 14.1149 8.12788 13.8404 7.48886C13.5659 6.84984 13.1856 6.28732 12.6996 5.8013C12.2136 5.31528 11.6488 4.93502 11.0053 4.66051C10.3663 4.386 9.68226 4.24875 8.95323 4.24875C8.2197 4.24875 7.53343 4.386 6.89441 4.66051C6.25538 4.93502 5.69286 5.31528 5.20685 5.8013C4.72083 6.28732 4.34057 6.84984 4.06606 7.48886C3.79155 8.12788 3.65429 8.81416 3.65429 9.54769C3.65429 10.2767 3.79155 10.963 4.06606 11.6065C4.34057 12.2455 4.72083 12.8081 5.20685 13.2941C5.69286 13.7801 6.25538 14.1604 6.89441 14.4349C7.53343 14.7094 8.2197 14.8466 8.95323 14.8466ZM3.41128 4.82252C3.32578 4.82252 3.24928 4.80002 3.18177 4.75501C3.11427 4.70551 3.06252 4.63801 3.02652 4.55251C2.99052 4.476 2.96127 4.37925 2.93877 4.26225C2.92077 4.14524 2.91176 4.02374 2.91176 3.89773C2.91176 3.54672 2.99502 3.22946 3.16152 2.94595C3.33253 2.65794 3.56204 2.42843 3.85005 2.25742C4.13806 2.08642 4.45757 2.00092 4.80858 2.00092C5.01109 2.00092 5.21585 2.03242 5.42285 2.09542C5.62986 2.15392 5.79862 2.24167 5.92912 2.35868C6.05063 2.47118 6.11138 2.59269 6.11138 2.72319C6.11138 2.8402 6.05513 2.94145 5.94262 3.02695L3.68129 4.73476C3.63179 4.77076 3.58679 4.79552 3.54629 4.80902C3.50579 4.81802 3.46078 4.82252 3.41128 4.82252ZM14.4952 4.82252C14.4457 4.82252 14.4007 4.81802 14.3602 4.80902C14.3197 4.79552 14.2747 4.77076 14.2252 4.73476L11.9706 3.02695C11.8536 2.94145 11.7951 2.8402 11.7951 2.72319C11.7951 2.59269 11.8558 2.47118 11.9773 2.35868C12.1078 2.24167 12.2766 2.15392 12.4836 2.09542C12.6906 2.03242 12.8954 2.00092 13.0979 2.00092C13.4489 2.00092 13.7684 2.08642 14.0564 2.25742C14.3444 2.42843 14.5717 2.65794 14.7382 2.94595C14.9092 3.22946 14.9947 3.54672 14.9947 3.89773C14.9947 4.02374 14.9857 4.14749 14.9677 4.269C14.9497 4.386 14.9227 4.4805 14.8867 4.55251C14.8462 4.63351 14.7922 4.69876 14.7247 4.74826C14.6572 4.79777 14.5807 4.82252 14.4952 4.82252ZM3.31003 15.8052C3.21103 15.7107 3.16152 15.5914 3.16152 15.4474C3.16152 15.3034 3.21328 15.1796 3.31678 15.0761L4.59933 13.8071L5.32835 14.5294L4.05256 15.7984C3.94905 15.9064 3.82305 15.9604 3.67454 15.9604C3.53054 15.9604 3.40903 15.9087 3.31003 15.8052ZM14.5964 15.8052C14.4974 15.9087 14.3737 15.9604 14.2252 15.9604C14.0812 15.9604 13.9574 15.9064 13.8539 15.7984L12.5849 14.5294L13.3071 13.8071L14.5897 15.0761C14.6977 15.1796 14.7494 15.3034 14.7449 15.4474C14.7449 15.5914 14.6954 15.7107 14.5964 15.8052ZM5.88187 10.2902C5.75137 10.2902 5.64111 10.2452 5.55111 10.1552C5.46111 10.0652 5.4161 9.95495 5.4161 9.82445C5.4161 9.68944 5.46111 9.57694 5.55111 9.48693C5.64111 9.39693 5.75137 9.35193 5.88187 9.35193H8.48071V5.7338C8.48071 5.59879 8.52572 5.48629 8.61572 5.39629C8.70572 5.30628 8.81598 5.26128 8.94648 5.26128C9.08149 5.26128 9.19399 5.30628 9.28399 5.39629C9.374 5.48629 9.419 5.59879 9.419 5.7338V9.82445C9.419 9.95495 9.374 10.0652 9.28399 10.1552C9.19399 10.2452 9.08149 10.2902 8.94648 10.2902H5.88187Z' fill='%2375757D'/%3E%3C/svg%3E");
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            -webkit-mask-size: contain;
+          }
+
+          .task-deadline-wrapper:hover .task-close {
+            display: inline-block;
+          }
+
+          .task-close {
+            display: none;
+            position: relative;
+            width: 18px;
+            height: 18px;
+            // top: 3px;
+            vertical-align: middle; /* 方便和文字对齐 */
+
+            background-color: var(--color);
+            mask-image: url('data:image/svg+xml,<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.42943 7.1776C6.18233 6.9305 6.10932 6.60287 6.35643 6.35577C6.60353 6.10867 6.93185 6.18098 7.17896 6.42808L8.99346 8.24257L10.8221 6.41397C11.0692 6.16687 11.3963 6.09339 11.6434 6.34049C11.8905 6.5876 11.8187 6.91643 11.5716 7.16354L9.74303 8.99214L11.5874 10.8365C11.8345 11.0836 11.9068 11.412 11.6597 11.6591C11.4126 11.9062 11.085 11.8332 10.8379 11.5861L8.9935 9.74167L7.16317 11.572C6.91607 11.8191 6.58723 11.8909 6.34013 11.6438C6.09303 11.3967 6.1665 11.0695 6.4136 10.8224L8.24393 8.9921L6.42943 7.1776Z" fill="%2375757D"/></svg>');
+
+            /* 确保蒙版完全显示 */
+            mask-repeat: no-repeat;
+            mask-position: center;
+            mask-size: contain;
+
+            /* 为了兼容性，有时需要 -webkit- 前缀 */
+            -webkit-mask-image: url('data:image/svg+xml,<svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6.42943 7.1776C6.18233 6.9305 6.10932 6.60287 6.35643 6.35577C6.60353 6.10867 6.93185 6.18098 7.17896 6.42808L8.99346 8.24257L10.8221 6.41397C11.0692 6.16687 11.3963 6.09339 11.6434 6.34049C11.8905 6.5876 11.8187 6.91643 11.5716 7.16354L9.74303 8.99214L11.5874 10.8365C11.8345 11.0836 11.9068 11.412 11.6597 11.6591C11.4126 11.9062 11.085 11.8332 10.8379 11.5861L8.9935 9.74167L7.16317 11.572C6.91607 11.8191 6.58723 11.8909 6.34013 11.6438C6.09303 11.3967 6.1665 11.0695 6.4136 10.8224L8.24393 8.9921L6.42943 7.1776Z" fill="%2375757D"/></svg>');
+            -webkit-mask-repeat: no-repeat;
+            -webkit-mask-position: center;
+            -webkit-mask-size: contain;
+          }
+
+          /* --- 其他元素的样式 --- */
+
+          /* 正常显示的日期部分的样式 */
+          .task-deadline-wrapper {
+          }
+
+          /* 日期值的样式 */
+          .task-date-value {
+            margin-right: 4px;
+            margin-left: 4px;
+          }
+
+          @media print {
+            body {
+              margin-top: 0;
+              margin-bottom: 0;
+            }
+          }
+
+          @page {
+            margin-left: 0.25in;
+            margin-right: 0.25in;
+            margin-top: 0.5in;
+            margin-bottom: 0.5in;
+          }
+        </style>
+        <style>
+        @font-face{font-family:KaTeX_AMS;src:url(fonts/KaTeX_AMS-Regular.woff2) format("woff2"),url(fonts/KaTeX_AMS-Regular.woff) format("woff"),url(fonts/KaTeX_AMS-Regular.ttf) format("truetype");font-weight:400;font-style:normal}@font-face{font-family:KaTeX_Caligraphic;src:url(fonts/KaTeX_Caligraphic-Bold.woff2) format("woff2"),url(fonts/KaTeX_Caligraphic-Bold.woff) format("woff"),url(fonts/KaTeX_Caligraphic-Bold.ttf) format("truetype");font-weight:700;font-style:normal}@font-face{font-family:KaTeX_Caligraphic;src:url(fonts/KaTeX_Caligraphic-Regular.woff2) format("woff2"),url(fonts/KaTeX_Caligraphic-Regular.woff) format("woff"),url(fonts/KaTeX_Caligraphic-Regular.ttf) format("truetype");font-weight:400;font-style:normal}@font-face{font-family:KaTeX_Fraktur;src:url(fonts/KaTeX_Fraktur-Bold.woff2) format("woff2"),url(fonts/KaTeX_Fraktur-Bold.woff) format("woff"),url(fonts/KaTeX_Fraktur-Bold.ttf) format("truetype");font-weight:700;font-style:normal}@font-face{font-family:KaTeX_Fraktur;src:url(fonts/KaTeX_Fraktur-Regular.woff2) format("woff2"),url(fonts/KaTeX_Fraktur-Regular.woff) format("woff"),url(fonts/KaTeX_Fraktur-Regular.ttf) format("truetype");font-weight:400;font-style:normal}@font-face{font-family:KaTeX_Main;src:url(fonts/KaTeX_Main-Bold.woff2) format("woff2"),url(fonts/KaTeX_Main-Bold.woff) format("woff"),url(fonts/KaTeX_Main-Bold.ttf) format("truetype");font-weight:700;font-style:normal}@font-face{font-family:KaTeX_Main;src:url(fonts/KaTeX_Main-BoldItalic.woff2) format("woff2"),url(fonts/KaTeX_Main-BoldItalic.woff) format("woff"),url(fonts/KaTeX_Main-BoldItalic.ttf) format("truetype");font-weight:700;font-style:italic}@font-face{font-family:KaTeX_Main;src:url(fonts/KaTeX_Main-Italic.woff2) format("woff2"),url(fonts/KaTeX_Main-Italic.woff) format("woff"),url(fonts/KaTeX_Main-Italic.ttf) format("truetype");font-weight:400;font-style:italic}@font-face{font-family:KaTeX_Main;src:url(fonts/KaTeX_Main-Regular.woff2) format("woff2"),url(fonts/KaTeX_Main-Regular.woff) format("woff"),url(fonts/KaTeX_Main-Regular.ttf) format("truetype");font-weight:400;font-style:normal}@font-face{font-family:KaTeX_Math;src:url(fonts/KaTeX_Math-BoldItalic.woff2) format("woff2"),url(fonts/KaTeX_Math-BoldItalic.woff) format("woff"),url(fonts/KaTeX_Math-BoldItalic.ttf) format("truetype");font-weight:700;font-style:italic}@font-face{font-family:KaTeX_Math;src:url(fonts/KaTeX_Math-Italic.woff2) format("woff2"),url(fonts/KaTeX_Math-Italic.woff) format("woff"),url(fonts/KaTeX_Math-Italic.ttf) format("truetype");font-weight:400;font-style:italic}@font-face{font-family:"KaTeX_SansSerif";src:url(fonts/KaTeX_SansSerif-Bold.woff2) format("woff2"),url(fonts/KaTeX_SansSerif-Bold.woff) format("woff"),url(fonts/KaTeX_SansSerif-Bold.ttf) format("truetype");font-weight:700;font-style:normal}@font-face{font-family:"KaTeX_SansSerif";src:url(fonts/KaTeX_SansSerif-Italic.woff2) format("woff2"),url(fonts/KaTeX_SansSerif-Italic.woff) format("woff"),url(fonts/KaTeX_SansSerif-Italic.ttf) format("truetype");font-weight:400;font-style:italic}@font-face{font-family:"KaTeX_SansSerif";src:url(fonts/KaTeX_SansSerif-Regular.woff2) format("woff2"),url(fonts/KaTeX_SansSerif-Regular.woff) format("woff"),url(fonts/KaTeX_SansSerif-Regular.ttf) format("truetype");font-weight:400;font-style:normal}@font-face{font-family:KaTeX_Script;src:url(fonts/KaTeX_Script-Regular.woff2) format("woff2"),url(fonts/KaTeX_Script-Regular.woff) format("woff"),url(fonts/KaTeX_Script-Regular.ttf) format("truetype");font-weight:400;font-style:normal}@font-face{font-family:KaTeX_Size1;src:url(fonts/KaTeX_Size1-Regular.woff2) format("woff2"),url(fonts/KaTeX_Size1-Regular.woff) format("woff"),url(fonts/KaTeX_Size1-Regular.ttf) format("truetype");font-weight:400;font-style:normal}@font-face{font-family:KaTeX_Size2;src:url(fonts/KaTeX_Size2-Regular.woff2) format("woff2"),url(fonts/KaTeX_Size2-Regular.woff) format("woff"),url(fonts/KaTeX_Size2-Regular.ttf) format("truetype");font-weight:400;font-style:normal}@font-face{font-family:KaTeX_Size3;src:url(fonts/KaTeX_Size3-Regular.woff2) format("woff2"),url(fonts/KaTeX_Size3-Regular.woff) format("woff"),url(fonts/KaTeX_Size3-Regular.ttf) format("truetype");font-weight:400;font-style:normal}@font-face{font-family:KaTeX_Size4;src:url(fonts/KaTeX_Size4-Regular.woff2) format("woff2"),url(fonts/KaTeX_Size4-Regular.woff) format("woff"),url(fonts/KaTeX_Size4-Regular.ttf) format("truetype");font-weight:400;font-style:normal}@font-face{font-family:KaTeX_Typewriter;src:url(fonts/KaTeX_Typewriter-Regular.woff2) format("woff2"),url(fonts/KaTeX_Typewriter-Regular.woff) format("woff"),url(fonts/KaTeX_Typewriter-Regular.ttf) format("truetype");font-weight:400;font-style:normal}.katex{font:normal 1.21em KaTeX_Main,Times New Roman,serif;line-height:1.2;text-indent:0;text-rendering:auto;border-color:currentColor}.katex *{-ms-high-contrast-adjust:none!important}.katex .katex-version:after{content:"0.12.0"}.katex .katex-mathml{position:absolute;clip:rect(1px,1px,1px,1px);padding:0;border:0;height:1px;width:1px;overflow:hidden}.katex .katex-html>.newline{display:block}.katex .base{position:relative;white-space:nowrap;width:min-content}.katex .base,.katex .strut{display:inline-block}.katex .textbf{font-weight:700}.katex .textit{font-style:italic}.katex .textrm{font-family:KaTeX_Main}.katex .textsf{font-family:KaTeX_SansSerif}.katex .texttt{font-family:KaTeX_Typewriter}.katex .mathnormal{font-family:KaTeX_Math;font-style:italic}.katex .mathit{font-family:KaTeX_Main;font-style:italic}.katex .mathrm{font-style:normal}.katex .mathbf{font-family:KaTeX_Main;font-weight:700}.katex .boldsymbol{font-family:KaTeX_Math;font-weight:700;font-style:italic}.katex .amsrm,.katex .mathbb,.katex .textbb{font-family:KaTeX_AMS}.katex .mathcal{font-family:KaTeX_Caligraphic}.katex .mathfrak,.katex .textfrak{font-family:KaTeX_Fraktur}.katex .mathtt{font-family:KaTeX_Typewriter}.katex .mathscr,.katex .textscr{font-family:KaTeX_Script}.katex .mathsf,.katex .textsf{font-family:KaTeX_SansSerif}.katex .mathboldsf,.katex .textboldsf{font-family:KaTeX_SansSerif;font-weight:700}.katex .mathitsf,.katex .textitsf{font-family:KaTeX_SansSerif;font-style:italic}.katex .mainrm{font-family:KaTeX_Main;font-style:normal}.katex .vlist-t{display:inline-table;table-layout:fixed;border-collapse:collapse}.katex .vlist-r{display:table-row}.katex .vlist{display:table-cell;vertical-align:bottom;position:relative}.katex .vlist>span{display:block;height:0;position:relative}.katex .vlist>span>span{display:inline-block}.katex .vlist>span>.pstrut{overflow:hidden;width:0}.katex .vlist-t2{margin-right:-2px}.katex .vlist-s{display:table-cell;vertical-align:bottom;font-size:1px;width:2px;min-width:2px}.katex .vbox{-ms-flex-direction:column;flex-direction:column;align-items:baseline}.katex .hbox,.katex .vbox{display:-ms-inline-flexbox;display:inline-flex}.katex .hbox{-ms-flex-direction:row;flex-direction:row;width:100%}.katex .thinbox{display:inline-flex;flex-direction:row;width:0;max-width:0}.katex .msupsub{text-align:left}.katex .mfrac>span>span{text-align:center}.katex .mfrac .frac-line{display:inline-block;width:100%;border-bottom-style:solid}.katex .hdashline,.katex .hline,.katex .mfrac .frac-line,.katex .overline .overline-line,.katex .rule,.katex .underline .underline-line{min-height:1px}.katex .mspace{display:inline-block}.katex .clap,.katex .llap,.katex .rlap{width:0;position:relative}.katex .clap>.inner,.katex .llap>.inner,.katex .rlap>.inner{position:absolute}.katex .clap>.fix,.katex .llap>.fix,.katex .rlap>.fix{display:inline-block}.katex .llap>.inner{right:0}.katex .clap>.inner,.katex .rlap>.inner{left:0}.katex .clap>.inner>span{margin-left:-50%;margin-right:50%}.katex .rule{display:inline-block;border:0 solid;position:relative}.katex .hline,.katex .overline .overline-line,.katex .underline .underline-line{display:inline-block;width:100%;border-bottom-style:solid}.katex .hdashline{display:inline-block;width:100%;border-bottom-style:dashed}.katex .sqrt>.root{margin-left:.27777778em;margin-right:-.55555556em}.katex .fontsize-ensurer.reset-size1.size1,.katex .sizing.reset-size1.size1{font-size:1em}.katex .fontsize-ensurer.reset-size1.size2,.katex .sizing.reset-size1.size2{font-size:1.2em}.katex .fontsize-ensurer.reset-size1.size3,.katex .sizing.reset-size1.size3{font-size:1.4em}.katex .fontsize-ensurer.reset-size1.size4,.katex .sizing.reset-size1.size4{font-size:1.6em}.katex .fontsize-ensurer.reset-size1.size5,.katex .sizing.reset-size1.size5{font-size:1.8em}.katex .fontsize-ensurer.reset-size1.size6,.katex .sizing.reset-size1.size6{font-size:2em}.katex .fontsize-ensurer.reset-size1.size7,.katex .sizing.reset-size1.size7{font-size:2.4em}.katex .fontsize-ensurer.reset-size1.size8,.katex .sizing.reset-size1.size8{font-size:2.88em}.katex .fontsize-ensurer.reset-size1.size9,.katex .sizing.reset-size1.size9{font-size:3.456em}.katex .fontsize-ensurer.reset-size1.size10,.katex .sizing.reset-size1.size10{font-size:4.148em}.katex .fontsize-ensurer.reset-size1.size11,.katex .sizing.reset-size1.size11{font-size:4.976em}.katex .fontsize-ensurer.reset-size2.size1,.katex .sizing.reset-size2.size1{font-size:.83333333em}.katex .fontsize-ensurer.reset-size2.size2,.katex .sizing.reset-size2.size2{font-size:1em}.katex .fontsize-ensurer.reset-size2.size3,.katex .sizing.reset-size2.size3{font-size:1.16666667em}.katex .fontsize-ensurer.reset-size2.size4,.katex .sizing.reset-size2.size4{font-size:1.33333333em}.katex .fontsize-ensurer.reset-size2.size5,.katex .sizing.reset-size2.size5{font-size:1.5em}.katex .fontsize-ensurer.reset-size2.size6,.katex .sizing.reset-size2.size6{font-size:1.66666667em}.katex .fontsize-ensurer.reset-size2.size7,.katex .sizing.reset-size2.size7{font-size:2em}.katex .fontsize-ensurer.reset-size2.size8,.katex .sizing.reset-size2.size8{font-size:2.4em}.katex .fontsize-ensurer.reset-size2.size9,.katex .sizing.reset-size2.size9{font-size:2.88em}.katex .fontsize-ensurer.reset-size2.size10,.katex .sizing.reset-size2.size10{font-size:3.45666667em}.katex .fontsize-ensurer.reset-size2.size11,.katex .sizing.reset-size2.size11{font-size:4.14666667em}.katex .fontsize-ensurer.reset-size3.size1,.katex .sizing.reset-size3.size1{font-size:.71428571em}.katex .fontsize-ensurer.reset-size3.size2,.katex .sizing.reset-size3.size2{font-size:.85714286em}.katex .fontsize-ensurer.reset-size3.size3,.katex .sizing.reset-size3.size3{font-size:1em}.katex .fontsize-ensurer.reset-size3.size4,.katex .sizing.reset-size3.size4{font-size:1.14285714em}.katex .fontsize-ensurer.reset-size3.size5,.katex .sizing.reset-size3.size5{font-size:1.28571429em}.katex .fontsize-ensurer.reset-size3.size6,.katex .sizing.reset-size3.size6{font-size:1.42857143em}.katex .fontsize-ensurer.reset-size3.size7,.katex .sizing.reset-size3.size7{font-size:1.71428571em}.katex .fontsize-ensurer.reset-size3.size8,.katex .sizing.reset-size3.size8{font-size:2.05714286em}.katex .fontsize-ensurer.reset-size3.size9,.katex .sizing.reset-size3.size9{font-size:2.46857143em}.katex .fontsize-ensurer.reset-size3.size10,.katex .sizing.reset-size3.size10{font-size:2.96285714em}.katex .fontsize-ensurer.reset-size3.size11,.katex .sizing.reset-size3.size11{font-size:3.55428571em}.katex .fontsize-ensurer.reset-size4.size1,.katex .sizing.reset-size4.size1{font-size:.625em}.katex .fontsize-ensurer.reset-size4.size2,.katex .sizing.reset-size4.size2{font-size:.75em}.katex .fontsize-ensurer.reset-size4.size3,.katex .sizing.reset-size4.size3{font-size:.875em}.katex .fontsize-ensurer.reset-size4.size4,.katex .sizing.reset-size4.size4{font-size:1em}.katex .fontsize-ensurer.reset-size4.size5,.katex .sizing.reset-size4.size5{font-size:1.125em}.katex .fontsize-ensurer.reset-size4.size6,.katex .sizing.reset-size4.size6{font-size:1.25em}.katex .fontsize-ensurer.reset-size4.size7,.katex .sizing.reset-size4.size7{font-size:1.5em}.katex .fontsize-ensurer.reset-size4.size8,.katex .sizing.reset-size4.size8{font-size:1.8em}.katex .fontsize-ensurer.reset-size4.size9,.katex .sizing.reset-size4.size9{font-size:2.16em}.katex .fontsize-ensurer.reset-size4.size10,.katex .sizing.reset-size4.size10{font-size:2.5925em}.katex .fontsize-ensurer.reset-size4.size11,.katex .sizing.reset-size4.size11{font-size:3.11em}.katex .fontsize-ensurer.reset-size5.size1,.katex .sizing.reset-size5.size1{font-size:.55555556em}.katex .fontsize-ensurer.reset-size5.size2,.katex .sizing.reset-size5.size2{font-size:.66666667em}.katex .fontsize-ensurer.reset-size5.size3,.katex .sizing.reset-size5.size3{font-size:.77777778em}.katex .fontsize-ensurer.reset-size5.size4,.katex .sizing.reset-size5.size4{font-size:.88888889em}.katex .fontsize-ensurer.reset-size5.size5,.katex .sizing.reset-size5.size5{font-size:1em}.katex .fontsize-ensurer.reset-size5.size6,.katex .sizing.reset-size5.size6{font-size:1.11111111em}.katex .fontsize-ensurer.reset-size5.size7,.katex .sizing.reset-size5.size7{font-size:1.33333333em}.katex .fontsize-ensurer.reset-size5.size8,.katex .sizing.reset-size5.size8{font-size:1.6em}.katex .fontsize-ensurer.reset-size5.size9,.katex .sizing.reset-size5.size9{font-size:1.92em}.katex .fontsize-ensurer.reset-size5.size10,.katex .sizing.reset-size5.size10{font-size:2.30444444em}.katex .fontsize-ensurer.reset-size5.size11,.katex .sizing.reset-size5.size11{font-size:2.76444444em}.katex .fontsize-ensurer.reset-size6.size1,.katex .sizing.reset-size6.size1{font-size:.5em}.katex .fontsize-ensurer.reset-size6.size2,.katex .sizing.reset-size6.size2{font-size:.6em}.katex .fontsize-ensurer.reset-size6.size3,.katex .sizing.reset-size6.size3{font-size:.7em}.katex .fontsize-ensurer.reset-size6.size4,.katex .sizing.reset-size6.size4{font-size:.8em}.katex .fontsize-ensurer.reset-size6.size5,.katex .sizing.reset-size6.size5{font-size:.9em}.katex .fontsize-ensurer.reset-size6.size6,.katex .sizing.reset-size6.size6{font-size:1em}.katex .fontsize-ensurer.reset-size6.size7,.katex .sizing.reset-size6.size7{font-size:1.2em}.katex .fontsize-ensurer.reset-size6.size8,.katex .sizing.reset-size6.size8{font-size:1.44em}.katex .fontsize-ensurer.reset-size6.size9,.katex .sizing.reset-size6.size9{font-size:1.728em}.katex .fontsize-ensurer.reset-size6.size10,.katex .sizing.reset-size6.size10{font-size:2.074em}.katex .fontsize-ensurer.reset-size6.size11,.katex .sizing.reset-size6.size11{font-size:2.488em}.katex .fontsize-ensurer.reset-size7.size1,.katex .sizing.reset-size7.size1{font-size:.41666667em}.katex .fontsize-ensurer.reset-size7.size2,.katex .sizing.reset-size7.size2{font-size:.5em}.katex .fontsize-ensurer.reset-size7.size3,.katex .sizing.reset-size7.size3{font-size:.58333333em}.katex .fontsize-ensurer.reset-size7.size4,.katex .sizing.reset-size7.size4{font-size:.66666667em}.katex .fontsize-ensurer.reset-size7.size5,.katex .sizing.reset-size7.size5{font-size:.75em}.katex .fontsize-ensurer.reset-size7.size6,.katex .sizing.reset-size7.size6{font-size:.83333333em}.katex .fontsize-ensurer.reset-size7.size7,.katex .sizing.reset-size7.size7{font-size:1em}.katex .fontsize-ensurer.reset-size7.size8,.katex .sizing.reset-size7.size8{font-size:1.2em}.katex .fontsize-ensurer.reset-size7.size9,.katex .sizing.reset-size7.size9{font-size:1.44em}.katex .fontsize-ensurer.reset-size7.size10,.katex .sizing.reset-size7.size10{font-size:1.72833333em}.katex .fontsize-ensurer.reset-size7.size11,.katex .sizing.reset-size7.size11{font-size:2.07333333em}.katex .fontsize-ensurer.reset-size8.size1,.katex .sizing.reset-size8.size1{font-size:.34722222em}.katex .fontsize-ensurer.reset-size8.size2,.katex .sizing.reset-size8.size2{font-size:.41666667em}.katex .fontsize-ensurer.reset-size8.size3,.katex .sizing.reset-size8.size3{font-size:.48611111em}.katex .fontsize-ensurer.reset-size8.size4,.katex .sizing.reset-size8.size4{font-size:.55555556em}.katex .fontsize-ensurer.reset-size8.size5,.katex .sizing.reset-size8.size5{font-size:.625em}.katex .fontsize-ensurer.reset-size8.size6,.katex .sizing.reset-size8.size6{font-size:.69444444em}.katex .fontsize-ensurer.reset-size8.size7,.katex .sizing.reset-size8.size7{font-size:.83333333em}.katex .fontsize-ensurer.reset-size8.size8,.katex .sizing.reset-size8.size8{font-size:1em}.katex .fontsize-ensurer.reset-size8.size9,.katex .sizing.reset-size8.size9{font-size:1.2em}.katex .fontsize-ensurer.reset-size8.size10,.katex .sizing.reset-size8.size10{font-size:1.44027778em}.katex .fontsize-ensurer.reset-size8.size11,.katex .sizing.reset-size8.size11{font-size:1.72777778em}.katex .fontsize-ensurer.reset-size9.size1,.katex .sizing.reset-size9.size1{font-size:.28935185em}.katex .fontsize-ensurer.reset-size9.size2,.katex .sizing.reset-size9.size2{font-size:.34722222em}.katex .fontsize-ensurer.reset-size9.size3,.katex .sizing.reset-size9.size3{font-size:.40509259em}.katex .fontsize-ensurer.reset-size9.size4,.katex .sizing.reset-size9.size4{font-size:.46296296em}.katex .fontsize-ensurer.reset-size9.size5,.katex .sizing.reset-size9.size5{font-size:.52083333em}.katex .fontsize-ensurer.reset-size9.size6,.katex .sizing.reset-size9.size6{font-size:.5787037em}.katex .fontsize-ensurer.reset-size9.size7,.katex .sizing.reset-size9.size7{font-size:.69444444em}.katex .fontsize-ensurer.reset-size9.size8,.katex .sizing.reset-size9.size8{font-size:.83333333em}.katex .fontsize-ensurer.reset-size9.size9,.katex .sizing.reset-size9.size9{font-size:1em}.katex .fontsize-ensurer.reset-size9.size10,.katex .sizing.reset-size9.size10{font-size:1.20023148em}.katex .fontsize-ensurer.reset-size9.size11,.katex .sizing.reset-size9.size11{font-size:1.43981481em}.katex .fontsize-ensurer.reset-size10.size1,.katex .sizing.reset-size10.size1{font-size:.24108004em}.katex .fontsize-ensurer.reset-size10.size2,.katex .sizing.reset-size10.size2{font-size:.28929605em}.katex .fontsize-ensurer.reset-size10.size3,.katex .sizing.reset-size10.size3{font-size:.33751205em}.katex .fontsize-ensurer.reset-size10.size4,.katex .sizing.reset-size10.size4{font-size:.38572806em}.katex .fontsize-ensurer.reset-size10.size5,.katex .sizing.reset-size10.size5{font-size:.43394407em}.katex .fontsize-ensurer.reset-size10.size6,.katex .sizing.reset-size10.size6{font-size:.48216008em}.katex .fontsize-ensurer.reset-size10.size7,.katex .sizing.reset-size10.size7{font-size:.57859209em}.katex .fontsize-ensurer.reset-size10.size8,.katex .sizing.reset-size10.size8{font-size:.69431051em}.katex .fontsize-ensurer.reset-size10.size9,.katex .sizing.reset-size10.size9{font-size:.83317261em}.katex .fontsize-ensurer.reset-size10.size10,.katex .sizing.reset-size10.size10{font-size:1em}.katex .fontsize-ensurer.reset-size10.size11,.katex .sizing.reset-size10.size11{font-size:1.19961427em}.katex .fontsize-ensurer.reset-size11.size1,.katex .sizing.reset-size11.size1{font-size:.20096463em}.katex .fontsize-ensurer.reset-size11.size2,.katex .sizing.reset-size11.size2{font-size:.24115756em}.katex .fontsize-ensurer.reset-size11.size3,.katex .sizing.reset-size11.size3{font-size:.28135048em}.katex .fontsize-ensurer.reset-size11.size4,.katex .sizing.reset-size11.size4{font-size:.32154341em}.katex .fontsize-ensurer.reset-size11.size5,.katex .sizing.reset-size11.size5{font-size:.36173633em}.katex .fontsize-ensurer.reset-size11.size6,.katex .sizing.reset-size11.size6{font-size:.40192926em}.katex .fontsize-ensurer.reset-size11.size7,.katex .sizing.reset-size11.size7{font-size:.48231511em}.katex .fontsize-ensurer.reset-size11.size8,.katex .sizing.reset-size11.size8{font-size:.57877814em}.katex .fontsize-ensurer.reset-size11.size9,.katex .sizing.reset-size11.size9{font-size:.69453376em}.katex .fontsize-ensurer.reset-size11.size10,.katex .sizing.reset-size11.size10{font-size:.83360129em}.katex .fontsize-ensurer.reset-size11.size11,.katex .sizing.reset-size11.size11{font-size:1em}.katex .delimsizing.size1{font-family:KaTeX_Size1}.katex .delimsizing.size2{font-family:KaTeX_Size2}.katex .delimsizing.size3{font-family:KaTeX_Size3}.katex .delimsizing.size4{font-family:KaTeX_Size4}.katex .delimsizing.mult .delim-size1>span{font-family:KaTeX_Size1}.katex .delimsizing.mult .delim-size4>span{font-family:KaTeX_Size4}.katex .nulldelimiter{display:inline-block;width:.12em}.katex .delimcenter,.katex .op-symbol{position:relative}.katex .op-symbol.small-op{font-family:KaTeX_Size1}.katex .op-symbol.large-op{font-family:KaTeX_Size2}.katex .op-limits>.vlist-t{text-align:center}.katex .accent>.vlist-t{text-align:center}.katex .accent .accent-body{position:relative}.katex .accent .accent-body:not(.accent-full){width:0}.katex .overlay{display:block}.katex .mtable .vertical-separator{display:inline-block;min-width:1px}.katex .mtable .arraycolsep{display:inline-block}.katex .mtable .col-align-c>.vlist-t{text-align:center}.katex .mtable .col-align-l>.vlist-t{text-align:left}.katex .mtable .col-align-r>.vlist-t{text-align:right}.katex .svg-align{text-align:left}.katex svg{display:block;position:absolute;width:100%;height:inherit;fill:currentColor;stroke:currentColor;fill-rule:nonzero;fill-opacity:1;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1}.katex svg path{stroke:none}.katex img{border-style:none;min-width:0;min-height:0;max-width:none;max-height:none}.katex .stretchy{width:100%;display:block;position:relative;overflow:hidden}.katex .stretchy:after,.katex .stretchy:before{content:""}.katex .hide-tail{width:100%;position:relative;overflow:hidden}.katex .halfarrow-left{position:absolute;left:0;width:50.2%;overflow:hidden}.katex .halfarrow-right{position:absolute;right:0;width:50.2%;overflow:hidden}.katex .brace-left{position:absolute;left:0;width:25.1%;overflow:hidden}.katex .brace-center{position:absolute;left:25%;width:50%;overflow:hidden}.katex .brace-right{position:absolute;right:0;width:25.1%;overflow:hidden}.katex .x-arrow-pad{padding:0 .5em}.katex .mover,.katex .munder,.katex .x-arrow{text-align:center}.katex .boxpad{padding:0 .3em}.katex .fbox,.katex .fcolorbox{box-sizing:border-box;border:.04em solid}.katex .cancel-pad{padding:0 .2em}.katex .cancel-lap{margin-left:-.2em;margin-right:-.2em}.katex .sout{border-bottom-style:solid;border-bottom-width:.08em}.katex-display{display:block;margin:1em 0;text-align:center}.katex-display>.katex{display:block;text-align:center;white-space:nowrap}.katex-display>.katex>.katex-html{display:block;position:relative}.katex-display>.katex>.katex-html>.tag{position:absolute;right:0}.katex-display.leqno>.katex>.katex-html>.tag{left:0;right:auto}.katex-display.fleqn>.katex{text-align:left;padding-left:2em}
+        </style>
+      </head>
+      <body >
+        <div class="title">第3章 垃圾收集器与内存分配策略</div>
+        <ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.1 概述</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>Java堆和方法区需要回收</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.2 对象已死？</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.2.1 引用计数算法</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>思路：给对象一个引用计数器，有一个地方引用这个对象时，这个对象的计数器值加一；引用失效时就减一；当计数器值为零的对象就是不可能再被使用的</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>问题：难以解决循环依赖问题。互相引用对方使计数器值不为零导致无法回收，即使这两个对象已经不能再被访问</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>优点：简单、判断效率高</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.2.2 可达性分析算法</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>思路：使用GC Roots根据引用关系向下搜索，搜索过程走过的路径叫“引用链”，搜索得到说明可达，搜索不到或者说某个对象到GC Roots间没有引用链相连则说明不可达，可回收</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_ad44defd-b1d3-453f-fd4f-784e4bfcec46.png"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>GC Roots包含：</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>（1）在虚拟机栈（栈帧中的本地变量表）中引用的对象，譬如各个线程被调用的方法堆栈中使用到的参数、局部变量、临时变量等。</span><span class="bold">方法里的局部变量。方法在执行，变量就活着。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>（2）在方法区中类静态属性引用的对象，譬如Java类的引用类型静态变量。生命周期和类一样长。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>（3）在方法区中常量引用的对象，譬如字符串常量池（String Table）里的引用。</span></div>
+    
+    <div class="note mm-editor"><span>String s1 = "hello"; s1在虚拟机栈的局部变量表（slot 0），"hello"在常量池中，字符串的不可变性，实现“共享”，节省内存
+String s3 = new String("hello"); s3在虚拟机栈的局部变量表（slot 1），"hello"在堆中，强制创建新对象</span></div>
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>（4）Native方法引用的对象： JNI调用的C/C++代码中使用的Java对象。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>（5）Java虚拟机内部的引用，如基本数据类型对应的Class对象，一些常驻的异常对象（比如NullPointExcepiton、OutOfMemoryError）等，还有系统类加载器。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>（6）所有被synchronized锁持有的对象：作为“锁”的对象，必须存活以保证线程同步正常。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>（7）反映Java虚拟机内部情况的JMXBean、JVMTI中注册的回调、本地代码缓存等。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>（8）除了这些固定的GC Roots集合以外，根据用户所选用的垃圾收集器以及当前回收的内存区域不同，还可以有其他对象“临时性”地加入</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.2.3 再谈引用</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>强引用：如Dog d = new Dog(); 只要强引用关系在，垃圾收集器就永远不会回收被引用的对象。只要没设为 null，垃圾回收器哪怕把系统搞崩（OOM），也不敢动它。d = null了才可能会被回收</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>软引用：还有用但非必须的对象。只有在系统要内存溢出前才会回收软引用的对象，如果这次回收还没有足够的内存才会抛出内存溢出异常</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>弱引用：也是非必须对象，但比软引用再弱一些。无论内存是否足够，弱引用的对象只能存活到下一次垃圾回收为止，都会回收掉</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>虚引用：无法通过虚引用来获得一个对象实例。为一个对象设置虚引用只是为了能够在这个对象被回收时收到一个系统通知</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.2.4 生存还是死亡？</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>思路：要回收一个对象得经历两个标记过程</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>1. 可达性分析是否与GC Roots相连接，没有的话第一次标记，标记后进行筛选，筛选有没有执行过finalize()方法的或有没有重写finalize()方法的，执行过的不行， 没重写的不行</span></div>
+    
+    <div class="note mm-editor"><span>任何一个对象的finalize()方法都只会被系统自动调用一次，如果对象面临下一次回收，它的finalize()方法不会被再次执行</span></div>
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>2. 有必要执行finalize方法的对象会被放入F-Queue的队列中，并稍后由一条由虚拟机自动创建、低调度优先级的Finalizer线程执行他们的finalize()方法，这里的执行是指虚拟机会触发这个方法开始运行，但不承诺得等到他运行结束</span></div>
+    
+    <div class="note mm-editor"><span>怕执行缓慢或死循环导致队列其他对象一直等待，甚至内存回收子系统崩溃
+</span></div>
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>3. 如果finalize()方法中重新与GC Roots产生关联则移除回收，否则真的要被回收了</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.2.5 回收方法区</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>不要求虚拟机在方法区中实现垃圾收集</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>主要回收：</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>废弃的常量：没有任何字符串对象引用常量池中的“Java”常量</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>不再使用的类型：需同时达到以下三条件，达到了也只是允许回收不是必须回收</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>该类所有的实例都已经被回收，也就是Java堆中不存在该类及其任何派生子类的实例。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>·加载该类的类加载器已经被回收，这个条件除非是经过精心设计的可替换类加载器的场景，如OSGi、JSP的重加载等，否则通常是很难达成的。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>该类对应的java.lang.Class对象没有在任何地方被引用，无法在任何地方通过反射访问该类的方法。</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.3 垃圾收集算法</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>垃圾收集算法可以划分为“引用计数式垃圾收集”和“追踪式垃圾收集”两大类</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.3.1 分代收集理论</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>三种分代假说</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>弱分代假说：绝大多数对象很快就消亡了</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>强分代假说：熬过越多次垃圾收集过程的对象就越难以消亡</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>根据以上两种，Java堆分为新生代和老年代</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>跨代引用假说：跨代引用相比于同代引用占比极少</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>如果为了少量跨代引用扫描整个老年代，花销大，所以建立记忆集</span></div>
+    
+    <div class="note mm-editor"><span>记忆集把老年代划分出若干区域，标识出哪个区域存在跨代引用，此后发生Minor GC时，只有这些区域里的对象才会被加入GC Roots进行扫描</span></div>
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>部分收集</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>新生代收集（Minor GC/Young GC）</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>老年代收集（Major GC/Old GC）</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>混合收集（Mixed GC）：目标是整个新生代和部分老年代的垃圾收集</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>整堆收集：收集整个Java堆和方法区的垃圾收集</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.3.2 标记-清除算法</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_0e33b4f3-8d8d-40c2-d995-f511e7537239.png"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>思想：分为“标记”和“清除”两个阶段，首先对（不）需要回收的对象进行标记，然后统一回收所有（不）被标记的对象</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>优点：简单，后续收集算法大都以改进它作为基础</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>缺点：（1）执行效率不稳定，两个阶段的执行效率都随对象数量增加而降低 （2）导致内存空间碎片化，容易没有连续空间放大对象不得不提前触发另一次垃圾收集</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.3.3 标记-复制算法</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_987cf060-c18c-4640-eabd-1ca9ef159d58.png"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>思想：把内存区域分为大小相等的两块，每次只使用其中一块。当这块的内存用完了，就把存活对象复制到另一块，再将已使用的那块一次清理掉</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>优点：简单高效</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>缺点：只剩一半可用内存了，太浪费</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>现在的虚拟机大多采用复制算法回收新生代</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>Apple式回收：把新生代分为一块较大的Eden空间和两块较小的Survivor空间，每次分配内存只使用Eden和其中一块survivor区域，当发生垃圾收集时，把这两块区域存活对象一次性复制到另一块survivor区域中，然后清理掉这两块空间</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>默认Eden和Survivor的大小比例是8∶1，也就是新生代可用内存为新生代内存空间的90%</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>当survivor空间不够放存活对象时，需要依赖老年代进行分配担保直接进入老年代</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.3.4 标记-整理算法</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_587c597f-6946-4acb-8641-f38e3fe6b090.png"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>思想：分为“标记”和“整理”阶段，标记过程和标记清除算法的一样，整理则是让所有存活的对象往内存一侧移动，然后直接清理边界外的对象</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>优点：(1)解决内存碎片化问题；(2)移动对象能带来更高的吞吐量（因为不移动对象极大地降低了用户程序的效率）</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>缺点：Stop The World：移动存活对象并更新引用他们的地方必须全程暂停用户应用</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.4 HotSpot的算法细节实现</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.4.1 根节点枚举</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>根节点枚举必须暂停用户线程</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>改进：使用OopMap记录当前方法的栈帧和寄存器里哪些位置的值是对象引用</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>类加载完成后，虚拟机就知道对象里哪个地方存的是引用，这样垃圾收集器就可以根据OopMap瞬间拿到了所有在栈上的根引用，并顺着这些根引用便利堆里的对象，这样就不用从线程的栈内存的第一个字节开始逐个看是引用还是整数，耗时且可能不准</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>OopMap 是在“编译期”（JIT编译时）生成的，而不是在“运行期”（线程跑到安全点时）生成的。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>OopMap 是针对方法中的安全点的，而不是类或对象</span></div>
+    
+    <div class="note mm-editor"><span>我们来梳理这个从属关系：
+1. 一个</span><span class="bold">类里定义了很多方法</span><span>。
+2. 当JVM（通过JIT编译器）决定要编译一个</span><span class="bold">方法</span><span>时，它会生成这个方法的机器码。
+3. 在生成机器码的过程中，JIT会在它认为合适的地方（比如循环末尾）插入一些</span><span class="bold">安全点</span><span>。
+4. 对于</span><span class="bold">每一个</span><span>插入的安全点，JIT都会在编译时</span><span class="bold">同时</span><span>生成一个对应的 </span><span class="bold">OopMap</span><span>。
+所以，OopMap 是一种</span><span class="bold">元数据</span><span>。它和某个具体的方法、某个具体的安全点地址绑定在一起。
+
+它的作用是“查地图”，它回答的是这样一个问题：
+“当一个线程的执行</span><span class="bold">暂停</span><span>在 MyClass.myMethod() 这个方法的 0x1234ABCD 这个安全点地址时，请告诉我，在这个线程的</span><span class="bold">栈帧和CPU寄存器里，哪些位置上存放的是对象引用（Oop）</span><span>？</span></div>
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.4.2 安全点</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>每条指令都生成OopMap会消耗大量存储空间，因此只在特定位置生成，这个位置就叫安全点</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>安全点的选择不能太少让每次收集器等待时间过长，也不能太多增大运行负荷，要以“是否具有让程序长时间运行的特征”为标准，例如方法调用、循环跳转、异常跳转</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>如何让所有线程都跑到安全点后停下来</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>抢先式中断：系统首先把所有用户线程全部中断，如果发现有用户线程中断的地方不在安全点上，就恢复这条线程执行，让它一会再重新中断，直到跑到安全点上。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>主动式中断：当垃圾收集需要中断线程的时候，不直接对线程操作，仅仅简单地设置一个标志位，各个线程执行过程时会不停地主动去轮询这个标志，一旦发现中断标志为真时就自己在最近的安全点上主动中断挂起</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>安全点就是指代码中包含这条轮询指令的位置。停在安全点后由JVM接管，利用预先生成好的OopMap，来解析和定位该线程执行上下文(栈和寄存器)中所有的对象引用，并将这些引用作为GC Roots的初始集合。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>要求高效，因此精简到一条汇编指令</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.4.3 安全区域</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>用户线程处于Sleep状态或者Blocked状态，这时候线程无法响应虚拟机的中断请求，不能再走到安全的地方去中断挂起自己，虚拟机也显然不可能持续等待线程重新被激活分配处理器时间。对于这种情况，就必须引入安全区域（Safe Region）来解决。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>安全区域是指能够确保在某一段代码片段之中，引用关系不会发生变化，因此，在这个区域中任意地方开始垃圾收集都是安全的。我们也可以把安全区域看作被扩展拉伸了的安全点。</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.4.4 记忆集与卡表</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>不止跨代引用需要记忆集，部分区域收集也需要</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>记忆集是一种用于记录从非收集区域指向收集区域的指针集合的抽象数据结构</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>如果不考虑空间占用和维护成本，可以记录全部的跨代引用对象</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>但可以选择不同的记录粒度来节省记忆集的存储和维护成本</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>1. 字长精度：每个记录精确到一个机器字长，该字包含跨代指针</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>2. 对象精度：每个记录精确到一个对象，该对象包含跨代指针</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>3. 卡精度：每个记录精确到一块内存区域，该区域包含跨代指针</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>使用卡表实现。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>字节数组CARD_TABLE的每一个元素都对应着其标识的内存区域中一块特定大小的内存块，这个内存块被称作“卡页”（Card Page）。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>一个卡页的内存中通常包含不止一个对象，只要卡页内有一个（或更多）对象的字段存在着跨代指针，那就将对应卡表的数组元素的值标识为1，称为这个元素变脏（Dirty），没有则标识为0。在垃圾收集发生时，只要筛选出卡表中变脏的元素，就能轻易得出哪些卡页内存块中包含跨代指针，把它们加入GC Roots中一并扫描。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>卡表与卡页对应示意图</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_253ed55f-413c-4918-8fa8-abad9eaaaf09.png"
+      style="width: 244px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.4.5 写屏障</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>HotSpot虚拟机通过写屏障维护卡表状态</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>写屏障可以看作在虚拟机层面对“引用类型字段赋值”这个动作的AOP切面，在引用对象赋值时会产生一个环形（Around）通知，供程序执行额外的动作，也就是说赋值的前后都在写屏障的覆盖范畴内</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>为了避免伪共享，可以先检查卡表标记，只有当卡表元素未被标记过时才将其变脏</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.4.6 并发的可达性分析</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">并发标记</span><span>：是为了解决 STW 停顿时间过长的问题</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">三色标记</span><span>：是分析并发标记的工具（白、灰、黑）</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">白色 (White)</span><span>：你还没检查过的房间（对象）。</span><span class="bold">（可能是小偷/垃圾）</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">灰色 (Gray)</span><span>：你</span><span class="bold">刚走进</span><span>的房间（对象），你正在检查这个房间里的所有门（引用），看它们通向哪里。</span><span class="bold">（工作队列）</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">黑色 (Black)</span><span>：你</span><span class="bold">已经检查完</span><span>的房间（对象），这个房间里的</span><span class="bold">所有门</span><span>（引用）你都看过了。</span><span class="bold">（已确认是好人/存活）</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>当且仅当以下两个条件同时满足时，会产生“对象消失”的问题，即原本应该是黑色的对象被误标为白色：</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>赋值器插入了一条或多条从黑色对象到白色对象的新引用</span></div>
+    
+    <div class="note mm-editor"><span class="bold">（开新门）</span><span>：一个</span><span class="bold">黑色</span><span>对象（A）指向了一个</span><span class="bold">白色</span><span>对象（C）</span></div>
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>赋值器删除了全部从灰色对象到该白色对象的直接或间接引用</span></div>
+    
+    <div class="note mm-editor"><span class="bold">（关旧门）</span><span>：</span><span class="bold">所有</span><span>从</span><span class="bold">灰色</span><span>对象（B）到那个</span><span class="bold">白色</span><span>对象（C）的</span><span class="bold">路径</span><span>都被</span><span class="bold">删除</span><span>了</span></div>
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>解决方法：破坏两个条件之一</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>增量更新 (Incremental Update) - (CMS 使用)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_06bfeb90-ad4c-48c5-b1bd-8d12c61a8121.png"
+      style="width: 430px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>原始快照 (SATB) - (G1, Shenandoah 使用)</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_c92c3cd8-1f0d-4300-aec0-e609f9454d0a.png"
+      style="width: 442px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.5 经典垃圾收集器</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>如果两个收集器之间存在连线，就说明它们可以搭配使用</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_8c46abec-9820-4123-98f5-4a0c6027bff0.png"
+      style="width: 303px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.5.1 Serial收集器</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>它只会使用一个处理器或一条收集线程去完成垃圾收集工作，且在垃圾收集时必须暂停其他所有工作线程，直至收集完毕</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>Serial/Serial Old收集器运行示意图</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_7655ed73-c14b-4a3a-f10d-525d29b7d414.png"
+      style="width: 559px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>优点：没有线程交互的开销，有最高的单线程收集效率，且内存消耗最小，所以是客户端模式下的默认新生代收集器</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.5.2 ParNew收集器</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>ParNew/Serial Old收集器运行示意图</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_269b3f02-7473-4cbd-b267-8f5e20ffa2ac.png"
+      style="width: 487px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>实质上是Serial收集器的多线程并行版本</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>是不少运行在服务端模式下的HotSpot虚拟机，尤其是JDK 7之前的遗留系统中首选的新生代收集器，除了Serial收集器外，目前只有它能与CMS 收集器配合工作。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>自JDK 9开始，ParNew加CMS收集器的组合就不再是官方推荐的服务端模式下的收集器解决方案了，且ParNew和CMS从此只能互相搭配使用，再也没有其他收集器能够和它们配合了</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>并行：描述的是</span><span class="bold">多条垃圾收集器线程之间的关系</span><span>，说明同一时间有多条这样的线程在协同工作，通常默认此时用户线程是处于等待状态。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>并发：描述的是</span><span class="bold">垃圾收集器线程与用户线程之间的关系</span><span>，说明同一间垃圾收集器线程与用户线程都在运行。由于用户线程并未被冻结，所以程序仍然能响应服务请求，但由于垃圾收集器线程占用了一部分系统资源，此时应用程序的处理的吞吐量将受到一定影响。</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.5.3 Parallel Scavenge收集器</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>也叫吞吐量优先收集器，是一款新生代收集器，同样是基于标记-复制算法实现的收集器，也是能够并行收集的多线程收集器</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>CMS等收集器的关注点是尽可能地缩短垃圾收集时用户线程的停顿时间，而Parallel Scavenge收集器的目标则是达到一个可控制的吞吐量</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>吞吐量 = 运行用户代码时间 / （运行用户代码时间 + 垃圾收集时间）</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>两个参数</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>控制最大垃圾收集停顿时间的-XX：MaxGCPauseMillis参数，设置小会牺牲吞吐量和新生代空间，越小垃圾收集越频繁</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>直接设置吞吐量大小的-XX：GCTimeRatio参数，也就是垃圾收集时间占总时间的比率，相当于吞吐量的倒数</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.5.4 Serial Old收集器</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>Serial Old是Serial收集器的老年代版本，它同样是一个单线程收集器，使用标记-整理算法。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>Serial/Serial Old收集器运行示意图</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_3a3d146f-ef73-48b1-dd8c-674d33f90245.png"
+      style="width: 529px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>主要供客户端模式下的HotSpot虚拟机使用，在服务端模式下，它也可能有两种用途：一种是在JDK 5以及之前的版本中与Parallel Scavenge收集器搭配使用，另外一种就是作为CMS收集器发生失败时的后备预案</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.5.5 Parallel Old收集器</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>Parallel Old是Parallel Scavenge收集器的老年代版本，支持多线程并发收集，基于标记-整理算法实现。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>Parallel Scavenge/Parallel Old收集器运行示意图</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_29654968-bf9b-48ad-df2b-c489dc10ca80.png"
+      style="width: 497px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>在注重吞吐量或者处理器资源较为稀缺的场合，都可以优先考虑Parallel Scavenge加Parallel Old收集器这个组合</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.5.6 CMS收集器</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>是一种以获取最短回收停顿时间为目标的收集器</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>Concurrent Mark Sweep收集器运行示意图</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_8e466c8f-733e-4ae5-a39e-13c25148281f.png"
+      style="width: 515px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>思想：四个阶段：</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>初始标记：Stop-The-World，仅仅标记 GC Roots 本身 + GC Roots 直接引用的“下一层”对象，过程很快</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>并发标记：用户线程恢复运行。垃圾回收线程从上一步标记的对象触发，遍历整个对象引用链，找出所有存活的对象并进行标记。这个过程和用户线程是并发的。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>重新标记（增量更新）：Stop-The-World，因为在”并发标记”阶段，用户线程还在运行，可能会改变某些对象的引用关系（比如一个对象本来要被回收，结果又被一个存活对象引用了）。这个阶段的任务就是修正这些变动，确保标记的最终准确性。这个阶段比初始标记稍长，但仍然很短。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>并发清除：用户线程恢复运行。垃圾回收线程开始清理所有未被标记的对象，回收它们占用的内存空间。这个过程也是和用户线程并发执行的。</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>优点：耗时最长的并发标记和并发清除阶段和用户线程一起工作，是HotSpot追求低停顿第一次成功尝试</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>缺点：</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>对处理器资源敏感，并发设计会占用一部分线程导致应用程序变慢</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>无法处理在标记过程中产生的“浮动垃圾”，需要留到下一次处理，但因为是并发的所以要预留内存给用户线程，如果内存空间不够会导致并发失败从而触发STW的Full GC</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>会产生大量空间碎片，因为CMS基于“标记-清除”算法，会导致Ful GC</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.5.7 Garbage First收集器</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>开创了收集器面向局部收集的设计思路和基于Region的内存布局形式</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>JDK 9发布之日，G1取代Parallel Scavenge加Parallel Old组合，成为服务端模式下的默认垃圾收集器，而CMS则沦落至被声明为不推荐使用（Deprecate）的收集器</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>G1不再坚持固定大小以及固定数量的分代区域划分，而是</span><span class="bold">把连续的Java堆划分为多个大小相等的独立区域（Region）</span><span>，每一个Region都可以根据需要，扮演新生代的Eden空间、Survivor空间，或者老年代空间。Region中还有一类特殊的Humongous区域，专门用来存储大对象。G1认为只要大小超过了一个 Region容量一半的对象即可判定为大对象。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>Mixed GC：面向堆内存任何部分组成回收集进行回收，衡量标准不再是它属于哪个分代，而且哪块区域存放的垃圾数量最多，回收效益最大</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>建立时间停顿模型：可以支持指定在长度为M毫秒的时间片段内，消耗在垃圾收集上的时间大概率不超过N毫秒的目标</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>G1收集器Region分区示意图</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_4dcffc67-98f1-4330-a6fc-15b863843c96.png"
+      style="width: 337px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>G1收集器跟踪各个Region里面的垃圾堆积的“价值”大小，然后在后台维护一个优先级列表，每次根据用户设定允许的收集停顿时间，优先处理回收价值收益最大的那些Region，这也就是“Garbage First”名字的由来。每次收集到的内存空间都是Region大小的整数倍</span></div>
+    
+    <div class="note mm-editor"><span>价值即回收所获得的空间大小以及回收所需时间的经验值</span></div>
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>关键问题：</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>怎么需要处理跨Region引用：每个Region维护自己的记忆集（哈希表），这些记忆集会记录别的Region指向自己的指针，并标记这些指针分别在哪些卡页范围之内，因此G1至少要耗费大约相当于Java堆容量10%至20%的额外内存来维持收集器工作</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>并发阶段如何保证线程与用户线程互不干扰的运行：原始快照。此外，G1为每一个Region设计了两个TAMS的指针，把Region中的一部分空间划分出来用于并发回收过程中新对象的分配，这新对象地址必须在这两个指针范围上，且这新对象默认是存活的不回收。如果内存回收速度赶不上内存分配，也会产生STW的Full GC。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>怎么建立可靠的停顿预测模型：以衰减均值为理论基础来实现的，在垃圾收集过程中，G1收集器会记录每个Region的回收耗时、每个Region记忆集里的脏卡数量等各个可测量的步骤花费的成本，并分析得出平均值、标准偏差、置信度等统计信息，衰减平均值更准确地代表“最近的”平均状态</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>运行思想：跟CMS类似，也分为四个阶段。并非纯粹地追求低延迟，目标是在延迟可控的情况下获得尽可能高的吞吐量</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_1b73a768-ab0a-4605-e2df-6d3b16f4b19d.png"
+      style="width: 481px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>初始标记：短暂Stop-The-World，只标记GC Roots能直接关联到的对象，并且修改TAMS指针的值使下一阶段并发标记用户线程还能分配新对象</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>并发标记：进行GC Roots Tracing的过程</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>最终标记：短暂Stop-The-World，修正并发标记期间，因程序运行导致标记发生变化的那一部分对象</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>筛选回收：Stop-The-World，多条收集器线程并行完成。根据时间来进行价值最大化的回收更新Region的统计数据，对各个Region的回收价值和成本进行排序，根据用户所期望的停顿时间来制定回收计划，可以自由选择任意多个Region构成回收集，然后把决定回收的那一部分Region的存活对象复制到空的Region中，再清理掉整个旧Region的全部空间</span></div>
+    
+    <div class="note mm-editor"><span>优势：
+1.没有内存碎片：因为是把存活对象整体复制到新区域，所以内存总是紧凑的，从根本上解决了CMS的碎片问题。这是一种标记-整理思想的体现。G1从整体来看是基于“标记-整理”算法实现的收集器，但从局部（两个Region之间）上看又是基于“标记-复制”算法实现。
+2.停顿可预测：我可以告诉G1,“这次GC的停顿时间不要超过200毫秒”。G1就会根据这个目标，只选择在200毫秒内能回收完的、最有价值的那几个Region进行回收，而不是每次都回收所有垃圾。
+3.“Garbage-First”名字的由来：G1的名字就来源于它的核心思想——优先回收垃圾最多(价值最大)的区域，从而保证在有限的停顿时间内，垃圾回收的效率最高。</span></div>
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>相比CMS：G1无论是为了垃圾收集产生的内存占用还是程序运行时的额外执行负载都要更高</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.6 低延迟垃圾收集器</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>不可能三角：内存占用、吞吐量、延迟，但延迟的重要性越来越大</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.6.1 Shenandoah收集器</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>目标是实现一种能在任何堆内存大小下都可以把垃圾收集的停顿时间限制在十毫秒以内的垃圾收集器</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>工作过程：</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_35c73657-ab25-4183-f41c-92210b9d6813.png"
+      style="width: 551px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>与G1至少有三个不同之处</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>支持并发的整理算法：Brooks提出的新方案不需要用到内存保护陷阱，而是在原有对象布局结构的最前面统一增加一个新的引用字段，在正常不处于并发移动的情况下，该引用指向对象自己</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_175a7b46-2860-418b-8cfe-862267ecdcc0.png"
+      
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>默认不使用分代收集，不会有专门的新生代Region或老年代Region</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>放弃了G1的记忆集，改用连接矩阵来记录跨Region的引用关系，降低了维护消耗和伪共享的发生概率</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_442ed1c8-c983-442f-c2b5-ed038dc764e5.png"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    <div class="note mm-editor"><span>如果Region N有对象指向Region M，就在表格的N行M列中打上一个标记，如图所示，如果Region 5中的对象Baz引用了Region 3的Foo，Foo又引用了Region 1的Bar，那连接矩阵中的5行3列、3行1列就应该被打上标记。在回收时通过这张表格就可以得出哪些Region之间产生了跨代引用。</span></div>
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.6.2 ZGC收集器</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>目标与Shenandoah收集器目标高度相似，但是实现思路两者有显著差异</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>ZGC收集器是一款基于Region内存布局的，（暂时）不设分代的，使用了读屏障、染色指针和内存多重映射等技术来实现可并发的标记-整理算法的，以低延迟为首要目标的一款垃圾收集器。</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>基于Region的堆内存布局：</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_562b39db-6962-49fc-ba98-28c3a86f52f9.png"
+      style="width: 269px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>小型Region：容量固定为2MB，用于放置小于256KB的小对象</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>中型Region：容量固定为32MB，用于放置大于等于256KB但小于4MB的对象</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>大型Region：容量不固定，可以动态变化，但必须为2MB的整数倍，用于放置4MB或以上的大对象。每个大型Region中只会存放一个大对象</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>染色指针：是一种直接将少量额外的信息存储在指针上的技术，直接把标记信息记在引用对象的指针上</span></div>
+    <ul class="image-list">
+    <li class="image-item">
+    <img
+      src="https://api2.mubu.com/v3/document_image/33731634_0f6cfd4f-5e24-45e2-af99-593ec8a829fc.png"
+      style="width: 400px;"
+      crossorigin="anonymous"
+      class="image"
+    />
+  </li>
+  </ul>
+    <div class="note mm-editor"><span>HotSpot虚拟机的几种收集器有不同的标记实现方案，有的把标记直接记录在对象头上（如Serial收集器），有的把标记记录在与对象相互独立的数据结构上（如G1、Shenandoah使用了一种相当于堆内存的1/64大小的，称为BitMap的结构来记录标记信息），而ZGC的染色指针是最直接的、最纯粹的，它直接把标记信息记在引用对象的指针上，这时，与其说可达性分析是遍历对象图来标记对象，还不如说是遍历“引用图”来标记“引用”了。</span></div>
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.7 选择合适的垃圾收集器</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.7.1 Epsilon收集器</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>无操作的收集器。如果应用只要运行数分钟甚至数秒， 只要Java虚拟机能正确分配内存，在堆耗尽之前就会退出，那显然运行负载极小、没有任何回收行为的Epsilon便是很恰当的选择</span></div>
+    
+    <div class="note mm-editor"><span>而事实上只要Java虚拟机能够工作，垃圾收集器便不可能是真正“无操作”的。原因是“垃圾收集器”这个名字并不能形容它全部的职责，更贴切的名字应该是本书为这一部分所取的标题——“自动内存管理子系统”。一个垃圾收集器除了垃圾收集这个本职工作之外，它还要负责堆的管理与布局、对象的分配、与解释器的协作、与编译器的协作、与监控子系统协作等职责，其中至少堆的管理和对象的分配这部分功能是Java虚拟机能够正常运作的必要支持，是一个最小化功能的垃圾收集器也必须实现的内容。从JDK 10开始，为了隔离垃圾收集器与Java虚拟机解释、编译、监控等子系统的关系，RedHat提出了垃圾收集器的统一接口，即JEP 304提案，Epsilon是这个接口的有效性验证和参考实现，同时也用于需要剥离垃圾收集器影响的性能测试和压力测试。</span></div>
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.7.2 收集器的权衡</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>三个因素影响：</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>应用程序的主要关注点：如果是数据分析、科学计算类的任务，目标是能尽快算出结果，那吞吐量就是主要关注点；如果是SLA应用，那停顿时间直接影响服务质量，严重的甚至会导致事务超时，这样延迟就是主要关注点；而如果是客户端应用或者嵌入式应用，那垃圾收集的内存占用则是不可忽视的。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>运行应用的基础设施：譬如硬件规格，要涉及的系统架构是x86-32/64、SPARC还是ARM/Aarch64；处理器的数量多少，分配内存的大小；选择的操作系统是Linux、Solaris还是Windows等</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>使用JDK的发行商、版本号：是ZingJDK/Zulu、OracleJDK、Open-JDK、OpenJ9抑或是其他公司的发行版？该JDK对应了《Java虚拟机规范》的哪个版本？</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.7.3 虚拟机及垃圾收集器日志</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>JDK 9开始，HotSpot所有功能的日志都收归到了“-Xlog”参数上</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>命令行：-Xlog[:[selector][:[output][:[decorators][:output-options]]]]</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>最关键的参数是选择器（Selector），它由标签（Tag）和日志级别（Level）共同组成</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>标签可理解为虚拟机中某个功能模块的名字，它告诉日志框架用户希望得到虚拟机哪些功能的日志输出。垃圾收集器的标签名称为“gc”</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>日志级别从低到高，共有Trace，Debug，Info，Warning，Error，Off六种级别，日志级别决定了输出信息的详细程度</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>还可以使用修饰器（Decorator）来要求每行日志输出都附加上额外的内容，支持附加在日志行上的信息包括：</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>time：当前日期和时间。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>uptime：虚拟机启动到现在经过的时间，以秒为单位。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>timemillis：当前时间的毫秒数，相当于System.currentTimeMillis()的输出。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>uptimemillis：虚拟机启动到现在经过的毫秒数。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>timenanos：当前时间的纳秒数，相当于System.nanoTime()的输出。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>uptimenanos：虚拟机启动到现在经过的纳秒数。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>pid：进程ID。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>tid：线程ID。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>level：日志级别。·tags：日志输出的标签集。</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>如果不指定，默认值是uptime、level、tags这三个</span></div>
+    
+    <div class="note mm-editor"><span>此时日志输出类似于以下形式：[3.080s][info][gc,cpu] GC(5) User=0.03s Sys=0.00s Real=0.01s</span></div>
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.8 实战：内存分配与回收策略</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.8.1 对象优先在Eden分配</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>大多数情况下，对象在新生代Eden区中分配。当Eden区没有足够空间进行分配时，虚拟机将发起 一次Minor GC</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.8.2 大对象直接进入老年代</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>大对象就是指需要大量连续内存空间的Java对象，最典型的大对象便是那种很长的字符串，或者元素数量很庞大的数组</span></div>
+    
+    <div class="note mm-editor"><span>在分配空间时，它容易导致内存明明还有不少空间时就提前触发垃圾收集，以获取足够的连续空间才能安置好它们，而当复制对象时，大对象就意味着高额的内存复制开销</span></div>
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>-XX：PretenureSizeThreshold参数指定大于该设置值的对象直接在老年代分配</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.8.3 长期存活的对象将进入老年代</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>虚拟机给每个对象定义了一个对象年龄（Age）计数器，存储在对象头中（详见第2章）。对象通常在Eden区里诞生，如果经过第一次 Minor GC后仍然存活，并且能被Survivor容纳的话，该对象会被移动到Survivor空间中，并且将其对象年龄设为1岁。对象在Survivor区中每熬过一次Minor GC，年龄就增加1岁，当它的年龄增加到一定程 度（默认为15），就会被晋升到老年代中</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>参数-XX：MaxTenuringThreshold可以设置对象晋升老年代的年龄阈值</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.8.4 动态对象年龄判定</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>HotSpot虚拟机并不是永远要求对象的年龄必须达到- XX：MaxTenuringThreshold才能晋升老年代，如果在Survivor空间中相同年龄所有对象大小的总和大于 Survivor空间的一半，年龄大于或等于该年龄的对象就可以直接进入老年代，无须等到-XX： MaxTenuringThreshold中要求的年龄</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span class="bold">3.8.5 空间分配担保</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>在发生Minor GC之前，虚拟机必须先检查老年代最大可用的连续空间是否大于新生代所有对象总空间，如果这个条件成立，那这一次Minor GC可以确保是安全的。如果不成立，则虚拟机会先查看- XX：HandlePromotionFailure参数的设置值是否允许担保失败；如果允许，那会继续检查老年代最大可用的连续空间是否大于历次晋升到老年代对象的平均大小，如果大于，将尝试进行一次Minor GC，尽管这次Minor GC是有风险的；如果小于，或者不允许冒险，那这时就要改为进行一次Full GC。</span></div>
+    
+    
+    <div class="children"><ul class="node-list">
+    <li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>最极端的情况就是内存回收后新生代中所有对象都存活，需要老年代进行分配担保，把Survivor无法容纳的对象直接送入老年代</span></div>
+    
+    
+    
+  </li>
+<li class="node">
+    <div class="bullet">
+    <div class="bullet-dot"></div>
+  </div>
+    
+    <div class="content mm-editor" ><span>JDK 6 Update 24之后的规则变为只要老年代的连续空间大于新生代对象总大小或者历次晋升的平均大小，就会进行Minor GC，否则将进行Full GC</span></div>
+    
+    
+    
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul></div>
+  </li>
+  </ul>
+        
+      </body>
+    </html>
+  

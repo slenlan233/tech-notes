@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Java 后端、数据库和 AI Agent 的个人技术知识库">
+<title>{{PAGE_TITLE}} · 技术知识库</title>
+<link rel="stylesheet" href="{{ROOT_PREFIX}}style.css">
+<script defer src="{{ROOT_PREFIX}}search-index.js"></script>
+<script defer src="{{ROOT_PREFIX}}app.js"></script>
+<script>
+// Keep this configuration before loading MathJax. Render formulas inside Markdown
+// without editing the original notes. Skip code blocks and fenced examples.
+window.MathJax = {
+  tex: {inlineMath: [['$', '$'], ['\\(', '\\)']], displayMath: [['$$', '$$'], ['\\[', '\\]']], processEscapes: true},
+  options: {skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']},
+  svg: {fontCache: 'local'}
+};
+</script>
+<script defer src="{{ROOT_PREFIX}}mathjax/tex-svg.js"></script>
+</head>
+<body>
+<header class="topbar"><div class="top-inner"><a class="brand" href="{{ROOT_PREFIX}}index.html"><span class="brand-mark">&lt;/&gt;</span><span>TECH<span class="brand-faded">NOTES</span></span></a><div class="top-actions"><a href="{{ROOT_PREFIX}}index.html" class="top-home">文章目录</a><button class="theme-switch" id="theme-switch" aria-label="切换深色模式" title="切换深色模式">◐</button><button class="mobile-menu" id="menu-toggle" aria-label="展开目录">☰</button></div></div></header>
+<div class="app-shell"><aside class="sidebar" id="sidebar"><div class="sidebar-inner"><div class="side-label">学习笔记 <span>{{COUNT}}</span></div><div class="search-container"><label class="search-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="m16 16 5 5"/></svg><input id="search" placeholder="搜索标题、正文、代码…" aria-label="搜索全部笔记正文" autocomplete="off" aria-controls="search-results" data-root="{{ROOT_PREFIX}}"></label><div id="search-results" class="search-results" role="region" aria-label="全文搜索结果" hidden></div></div><div class="nav-items">{{NAV_ITEMS}}</div></div></aside><main class="main"><div class="main-inner">{{PAGE_CONTENT}}</div></main>{{TOC}}</div>
+<footer class="site-footer">Built from Markdown · 图片、列表和代码都保留在同一个知识库</footer>
+</body></html>
