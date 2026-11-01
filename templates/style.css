@@ -489,3 +489,64 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 :root[data-theme="dark"] .article-content .codeblock .hl-code .c,
 :root[data-theme="dark"] .article-content .codeblock .hl-code .cm,
 :root[data-theme="dark"] .article-content .codeblock .hl-code .c1 { font-style: italic; }
+
+
+/* tech-notes-20261102-code-quote-fix
+   Home motto: balance the title on the left with a quiet, right-aligned inscription.
+   Avoid a full-width horizontal rule and keep the article list separate. */
+.hero .hero-epigraph {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: 37px 0 0 auto;
+  padding: 0;
+  border: 0;
+  text-align: right;
+}
+.hero .hero-epigraph::before {
+  content: "";
+  display: block;
+  width: 42px;
+  height: 1px;
+  background: var(--border);
+  margin: 0 0 12px auto;
+}
+.hero .hero-epigraph p {
+  margin: 0;
+  color: var(--text);
+  font-family: "STKaiti", "KaiTi", "Songti SC", "Noto Serif CJK SC", serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.9;
+  letter-spacing: .015em;
+  text-align: right;
+}
+.hero .hero-epigraph cite {
+  display: block;
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-style: normal;
+  font-family: inherit;
+  letter-spacing: .01em;
+  color: var(--muted);
+  text-align: right;
+}
+@media (max-width: 760px) {
+  .hero .hero-epigraph { margin-top: 28px; }
+  .hero .hero-epigraph p { font-size: 14px; }
+}
+/* Code fences must have ONE plain background. Do not touch inline code chips. */
+.article-content .codeblock pre code.hl-code,
+.article-content .codeblock pre code.hl-code span {
+  background-color: transparent !important;
+  background-image: none !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+}
+.article-content .codeblock pre code.hl-code {
+  display: block;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+}
+.article-content .codeblock pre { background: transparent !important; }

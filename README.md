@@ -55,4 +55,5 @@ python build.py
 
 ---
 
-<p align="center"><em>知不足，然后能自反也；知困，然后能自强也。</em><br><sub>——《礼记·学记》</sub></p>
+<p align="center"><em>知不足，然后能自反也；知困，然后能自强也。</em></p>
+<p align="right"><sub>——《礼记·学记》</sub></p>
