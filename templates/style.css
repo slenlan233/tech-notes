@@ -460,14 +460,14 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .article-content .codeblock .hl-code .ch,
 .article-content .codeblock .hl-code .cs,
 .article-content .codeblock .hl-code .cpf,
-.article-content .codeblock .hl-code .cp { color: #82909c; font-weight: normal; text-decoration: none; }
+.article-content .codeblock .hl-code .cp { color: #677583; font-weight: normal; text-decoration: none; }
 :root[data-theme="dark"] .article-content .codeblock .hl-code .c,
 :root[data-theme="dark"] .article-content .codeblock .hl-code .c1,
 :root[data-theme="dark"] .article-content .codeblock .hl-code .cm,
 :root[data-theme="dark"] .article-content .codeblock .hl-code .ch,
 :root[data-theme="dark"] .article-content .codeblock .hl-code .cs,
 :root[data-theme="dark"] .article-content .codeblock .hl-code .cpf,
-:root[data-theme="dark"] .article-content .codeblock .hl-code .cp { color: #8594a4; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .cp { color: #aab7c5; font-weight: normal; text-decoration: none; }
 
 /* operator */
 .article-content .codeblock .hl-code .o,
