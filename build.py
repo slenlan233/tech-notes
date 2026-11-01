@@ -157,6 +157,7 @@ def excerpt(text: str) -> str:
     clean = re.sub(r'\[([^]]+)\]\([^)]*\)', r'\1', clean)
     clean = re.sub(r'(?m)^\s*(?:#{1,6}\s+|[-+*]\s+|\d+[.)]\s+|>\s*)', '', clean)
     clean = re.sub(r'[`*_~]+', '', clean)
+    clean = clean.replace('&#8203;', '').replace('&#x200b;', '').replace('&ZeroWidthSpace;', '')
     clean = re.sub(r'\s+', ' ', clean).strip()
     return clean[:145] + ('…' if len(clean) > 145 else '')
 
