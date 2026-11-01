@@ -618,3 +618,61 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
     font-style: normal;
 }
 /* tech-notes: comment-contrast-v2 END */
+
+/* tech-notes: siyuan-github-readability-v1 START */
+/* Only multi-line code fences: keep inline-code chips unchanged.
+   The bg is sampled from the user-supplied SiYuan screenshot (#f3f4f4).
+   Font fallback improves Chinese comments on Windows without loading fonts. */
+.article-content .codeblock {
+  background: #f3f4f4;
+}
+.article-content .codeblock .codeblock-label {
+  background: #f1f2f3;
+}
+.article-content .codeblock pre {
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: #24292e;
+}
+.article-content .codeblock pre code.hl-code {
+  font-family: "Cascadia Code", Consolas, "Microsoft YaHei UI", "Microsoft YaHei", monospace;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: 400;
+}
+/* Enforce upright, sufficiently dark Chinese/English comments even if
+   the older syntax theme contains later italic rules. */
+.article-content .codeblock .hl-code .c,
+.article-content .codeblock .hl-code .c1,
+.article-content .codeblock .hl-code .cm,
+.article-content .codeblock .hl-code .ch,
+.article-content .codeblock .hl-code .cs,
+.article-content .codeblock .hl-code .cpf,
+.article-content .codeblock .hl-code .cp {
+  color: #5f6973 !important;
+  font-style: normal !important;
+  font-weight: 400;
+}
+/* Preserve the previously chosen dark syntax colors and background. */
+:root[data-theme="dark"] .article-content .codeblock {
+  background: #202731;
+}
+:root[data-theme="dark"] .article-content .codeblock .codeblock-label {
+  background: #252b34;
+}
+:root[data-theme="dark"] .article-content .codeblock pre {
+  color: #dce4f0;
+}
+:root[data-theme="dark"] .article-content .codeblock .hl-code .c,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .c1,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .cm,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .ch,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .cs,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .cpf,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .cp {
+  color: #aab7c5 !important;
+}
+@media (max-width: 760px) {
+  .article-content .codeblock pre { font-size: 14px; }
+}
+/* tech-notes: siyuan-github-readability-v1 END */
