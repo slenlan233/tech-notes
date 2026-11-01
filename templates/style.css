@@ -258,3 +258,33 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
 .article-content h2:has(> .outline-toggle),.article-content h3:has(> .outline-toggle),.article-content h4:has(> .outline-toggle){scroll-margin-top:85px}
 @media(max-width:760px){.outline-toolbar{gap:6px}.outline-toolbar-label{width:100%;margin-bottom:2px}.article-content .outline-toggle{margin-right:3px;width:18px}.article-content .outline-list-body{margin-left:4px;padding-left:12px}.article-content .outline-section-body{padding-left:13px}}
 @media(prefers-reduced-motion:reduce){.article-content .outline-chevron{transition:none}}
+
+
+/* Home only: a quiet motto under the hero introduction and article count. */
+.hero-epigraph {
+  max-width: 650px;
+  margin: 31px 0 0;
+  padding-top: 17px;
+  border-top: 1px solid var(--border);
+}
+.hero-epigraph p {
+  margin: 0;
+  color: var(--text);
+  font-family: "STKaiti", "KaiTi", "Songti SC", "Noto Serif CJK SC", serif;
+  font-size: 16px;
+  font-weight: 450;
+  letter-spacing: .035em;
+  line-height: 1.9;
+}
+.hero-epigraph cite {
+  display: block;
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 5px;
+  font-style: normal;
+  letter-spacing: .03em;
+}
+@media(max-width:760px) {
+  .hero-epigraph {margin-top: 23px; padding-top: 13px;}
+  .hero-epigraph p {font-size: 14px;}
+}
