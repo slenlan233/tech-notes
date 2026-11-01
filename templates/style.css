@@ -604,3 +604,17 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   text-align: right;
   justify-self: stretch;
 }
+
+/* tech-notes: comment-contrast-v2 BEGIN */
+/* SiYuan-like readable comments: normal font, deeper grey-blue.
+   Scope this only to fenced code; inline code chips stay unchanged. */
+.article-content .codeblock pre code.hl-code :is(.c, .c1, .cm, .ch, .cs, .cpf, .cp) {
+    color: #566272;
+    font-style: normal;
+    font-weight: 400;
+}
+:root[data-theme="dark"] .article-content .codeblock pre code.hl-code :is(.c, .c1, .cm, .ch, .cs, .cpf, .cp) {
+    color: #b9c4d0;
+    font-style: normal;
+}
+/* tech-notes: comment-contrast-v2 END */
