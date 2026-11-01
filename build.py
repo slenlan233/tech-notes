@@ -78,26 +78,50 @@ def normalize_siyuan_markdown(text: str) -> str:
 
 
 def highlight_code(source: str, lexer, lang: str) -> str:
-    """Highlight Markdown fences without changing the source text.
+    """Highlight code without modifying its text; enhance Java method-call tokens.
 
-    Pygments' Java lexer labels most type identifiers as ordinary Name tokens,
-    and many member calls as Name.Attribute. A small, cosmetic refinement makes
-    the familiar Type / method / field distinction easier to scan.
+    Pygments already recognizes many Java declarations and dot-qualified calls.
+    Extend it to unqualified calls (e.g. check()) and method references (::run).
+    Only actual Pygments Name tokens are examined, so strings/comments remain intact.
+    This is syntax-oriented highlighting, not Java symbol resolution.
     """
     tokens = list(lex(source, lexer))
     if lang == 'java':
         enriched = []
         for i, (kind, value) in enumerate(tokens):
-            # Java class/interface names generally begin with an uppercase letter.
-            if kind == Name and value and value[0].isupper():
-                kind = Name.Class
-            # Dot-qualified method calls: `target.getClass()` vs field `this.advised`.
-            elif kind == Name.Attribute:
-                j = i + 1
-                while j < len(tokens) and tokens[j][0] in Text.Whitespace:
-                    j += 1
-                if j < len(tokens) and tokens[j][0] in Punctuation and tokens[j][1].startswith('('):
+            if kind == Name or kind == Name.Attribute:
+                # A call is a name followed by (, allowing spaces/newlines.
+                following = i + 1
+                while following < len(tokens) and tokens[following][0] in Text.Whitespace:
+                    following += 1
+                is_call = (
+                    following < len(tokens)
+                    and tokens[following][0] in Punctuation
+                    and tokens[following][1].startswith('(')
+                )
+
+                preceding = i - 1
+                while preceding >= 0 and tokens[preceding][0] in Text.Whitespace:
+                    preceding -= 1
+                is_method_reference = (
+                    preceding >= 1
+                    and tokens[preceding][0] in Punctuation
+                    and tokens[preceding][1] == ':'
+                    and tokens[preceding - 1][0] in Punctuation
+                    and tokens[preceding - 1][1] == ':'
+                )
+                is_constructor = (
+                    preceding >= 0
+                    and tokens[preceding][0] in Keyword
+                    and tokens[preceding][1] == 'new'
+                )
+
+                if is_method_reference or (is_call and not is_constructor and
+                                           (kind == Name.Attribute or not value[:1].isupper())):
                     kind = Name.Function
+                elif kind == Name and value and value[0].isupper():
+                    # Keep probable type names and constructors purple.
+                    kind = Name.Class
             elif kind in Keyword and value in {'this', 'super'}:
                 kind = Name.Builtin.Pseudo
             elif kind in Keyword and value == 'new':
@@ -105,7 +129,6 @@ def highlight_code(source: str, lexer, lang: str) -> str:
             enriched.append((kind, value))
         tokens = enriched
     return pygments_format(tokens, CODE_FORMATTER)
-
 
 def render_fenced_code(self, tokens, index, options, env):
     """Use the explicit Markdown fence language; never guess unspecified languages."""

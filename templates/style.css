@@ -630,7 +630,7 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   background: #f1f2f3;
 }
 .article-content .codeblock pre {
-  font-size: 14.5px;
+  font-size: 13.5px;
   line-height: 1.7;
   color: #24292e;
 }
@@ -673,6 +673,6 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   color: #aab7c5 !important;
 }
 @media (max-width: 760px) {
-  .article-content .codeblock pre { font-size: 14px; }
+  .article-content .codeblock pre { font-size: 13px; }
 }
 /* tech-notes: siyuan-github-readability-v1 END */
