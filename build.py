@@ -19,8 +19,9 @@ from mubu_rescue import create_rescue_page
 
 try:
     from markdown_it import MarkdownIt
-    from pygments import highlight
+    from pygments import lex, format as pygments_format
     from pygments.formatters import HtmlFormatter
+    from pygments.token import Keyword, Name, Text, Punctuation
     from pygments.lexers import get_lexer_by_name
     from pygments.util import ClassNotFound
 except ImportError:
@@ -76,6 +77,36 @@ def normalize_siyuan_markdown(text: str) -> str:
 
 
 
+def highlight_code(source: str, lexer, lang: str) -> str:
+    """Highlight Markdown fences without changing the source text.
+
+    Pygments' Java lexer labels most type identifiers as ordinary Name tokens,
+    and many member calls as Name.Attribute. A small, cosmetic refinement makes
+    the familiar Type / method / field distinction easier to scan.
+    """
+    tokens = list(lex(source, lexer))
+    if lang == 'java':
+        enriched = []
+        for i, (kind, value) in enumerate(tokens):
+            # Java class/interface names generally begin with an uppercase letter.
+            if kind == Name and value and value[0].isupper():
+                kind = Name.Class
+            # Dot-qualified method calls: `target.getClass()` vs field `this.advised`.
+            elif kind == Name.Attribute:
+                j = i + 1
+                while j < len(tokens) and tokens[j][0] in Text.Whitespace:
+                    j += 1
+                if j < len(tokens) and tokens[j][0] in Punctuation and tokens[j][1].startswith('('):
+                    kind = Name.Function
+            elif kind in Keyword and value in {'this', 'super'}:
+                kind = Name.Builtin.Pseudo
+            elif kind in Keyword and value == 'new':
+                kind = Keyword.Pseudo
+            enriched.append((kind, value))
+        tokens = enriched
+    return pygments_format(tokens, CODE_FORMATTER)
+
+
 def render_fenced_code(self, tokens, index, options, env):
     """Use the explicit Markdown fence language; never guess unspecified languages."""
     token = tokens[index]
@@ -84,14 +115,15 @@ def render_fenced_code(self, tokens, index, options, env):
     if lang and lang not in PLAIN_LANGUAGES:
         try:
             lexer = get_lexer_by_name(lang, stripnl=False, ensurenl=False)
-            code_html = highlight(token.content, lexer, CODE_FORMATTER)
+            code_html = highlight_code(token.content, lexer, lang)
         except ClassNotFound:
             code_html = html.escape(token.content)
     else:
         code_html = html.escape(token.content)
     safe_label = html.escape(label.upper())
+    safe_lang = re.sub(r"[^a-z0-9_-]", "-", lang) or "text"
     return (f'<div class="codeblock"><div class="codeblock-label">{safe_label}</div>'
-            f'<pre><code class="hl-code">{code_html}</code></pre></div>')
+            f'<pre><code class="hl-code lang-{safe_lang}">{code_html}</code></pre></div>')
 
 
 def render_inline_code(self, tokens, index, options, env):

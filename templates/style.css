@@ -288,3 +288,204 @@ span.linenos.special { color: #000000; background-color: #ffffc0; padding-left: 
   .hero-epigraph {margin-top: 23px; padding-top: 13px;}
   .hero-epigraph p {font-size: 14px;}
 }
+
+
+/* 2026-11: SiYuan-inspired, clean code blocks (no striped inline background). */
+.article-content .codeblock {
+  background: #f5f6f9;
+  border: 1px solid #e8eaf0;
+  box-shadow: none;
+}
+.article-content .codeblock pre {
+  background: transparent;
+  color: #242b37;
+  font-size: 13.5px;
+  line-height: 1.8;
+  padding: 17px 19px;
+  white-space: pre;
+}
+.article-content .codeblock pre code.hl-code {
+  display: block;                 /* Each line shares ONE pre background. */
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  border-radius: 0;
+  padding: 0;
+  color: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  white-space: inherit;
+  overflow-wrap: normal;
+}
+.article-content .codeblock .hl-code .err {
+  border: 0;                      /* Pygments 'error' style is not a code box. */
+  background: transparent;
+}
+:root[data-theme="dark"] .article-content .codeblock {
+  background: #202731;
+  border-color: #343c49;
+}
+:root[data-theme="dark"] .article-content .codeblock pre {
+  background: transparent;
+  color: #dce4f0;
+}
+:root[data-theme="dark"] .article-content .codeblock pre code.hl-code {
+  display: block;
+  background: transparent;
+  color: inherit;
+}
+:root[data-theme="dark"] .article-content .codeblock .hl-code .err {
+  border: 0;
+  background: transparent;
+}
+/* Markdown inline code stays a subtly shaded pill in paragraphs and lists. */
+.article-content code.inline-code {
+  box-shadow: none;
+}
+
+/* keyword */
+.article-content .codeblock .hl-code .k,
+.article-content .codeblock .hl-code .kd,
+.article-content .codeblock .hl-code .kn,
+.article-content .codeblock .hl-code .kr,
+.article-content .codeblock .hl-code .kt { color: #d23851; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .k,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .kd,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .kn,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .kr,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .kt { color: #ff7c91; font-weight: normal; text-decoration: none; }
+
+/* keyword-constant */
+.article-content .codeblock .hl-code .kc { color: #8754b3; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .kc { color: #bda2f5; font-weight: normal; text-decoration: none; }
+
+/* pseudo-keyword */
+.article-content .codeblock .hl-code .kp,
+.article-content .codeblock .hl-code .bp { color: #c8762c; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .kp,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .bp { color: #eeb579; font-weight: normal; text-decoration: none; }
+
+/* type */
+.article-content .codeblock .hl-code .nc,
+.article-content .codeblock .hl-code .nn,
+.article-content .codeblock .hl-code .ne { color: #8654bf; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .nc,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .nn,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .ne { color: #c4a1ff; font-weight: normal; text-decoration: none; }
+
+/* function */
+.article-content .codeblock .hl-code .nf,
+.article-content .codeblock .hl-code .fm { color: #315fc1; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .nf,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .fm { color: #8ab9ff; font-weight: normal; text-decoration: none; }
+
+/* attribute */
+.article-content .codeblock .hl-code .na { color: #414955; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .na { color: #ced8e5; font-weight: normal; text-decoration: none; }
+
+/* builtin */
+.article-content .codeblock .hl-code .nb { color: #b36525; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .nb { color: #f2b477; font-weight: normal; text-decoration: none; }
+
+/* variable */
+.article-content .codeblock .hl-code .nv,
+.article-content .codeblock .hl-code .vc,
+.article-content .codeblock .hl-code .vg,
+.article-content .codeblock .hl-code .vi,
+.article-content .codeblock .hl-code .vm { color: #314055; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .nv,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .vc,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .vg,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .vi,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .vm { color: #d3ddec; font-weight: normal; text-decoration: none; }
+
+/* constant */
+.article-content .codeblock .hl-code .no { color: #9a599c; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .no { color: #d8a4e2; font-weight: normal; text-decoration: none; }
+
+/* decorator */
+.article-content .codeblock .hl-code .nd { color: #995bb8; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .nd { color: #d6abff; font-weight: normal; text-decoration: none; }
+
+/* string */
+.article-content .codeblock .hl-code .s,
+.article-content .codeblock .hl-code .s1,
+.article-content .codeblock .hl-code .s2,
+.article-content .codeblock .hl-code .sa,
+.article-content .codeblock .hl-code .sb,
+.article-content .codeblock .hl-code .sc,
+.article-content .codeblock .hl-code .dl,
+.article-content .codeblock .hl-code .sd,
+.article-content .codeblock .hl-code .se,
+.article-content .codeblock .hl-code .sh,
+.article-content .codeblock .hl-code .si,
+.article-content .codeblock .hl-code .sx,
+.article-content .codeblock .hl-code .sr,
+.article-content .codeblock .hl-code .ss { color: #188369; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .s,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .s1,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .s2,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .sa,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .sb,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .sc,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .dl,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .sd,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .se,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .sh,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .si,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .sx,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .sr,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .ss { color: #8bd6b7; font-weight: normal; text-decoration: none; }
+
+/* number */
+.article-content .codeblock .hl-code .m,
+.article-content .codeblock .hl-code .mi,
+.article-content .codeblock .hl-code .mf,
+.article-content .codeblock .hl-code .mh,
+.article-content .codeblock .hl-code .mb,
+.article-content .codeblock .hl-code .mo,
+.article-content .codeblock .hl-code .il { color: #9b58a9; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .m,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .mi,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .mf,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .mh,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .mb,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .mo,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .il { color: #d9a4ec; font-weight: normal; text-decoration: none; }
+
+/* comment */
+.article-content .codeblock .hl-code .c,
+.article-content .codeblock .hl-code .c1,
+.article-content .codeblock .hl-code .cm,
+.article-content .codeblock .hl-code .ch,
+.article-content .codeblock .hl-code .cs,
+.article-content .codeblock .hl-code .cpf,
+.article-content .codeblock .hl-code .cp { color: #82909c; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .c,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .c1,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .cm,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .ch,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .cs,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .cpf,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .cp { color: #8594a4; font-weight: normal; text-decoration: none; }
+
+/* operator */
+.article-content .codeblock .hl-code .o,
+.article-content .codeblock .hl-code .ow { color: #596476; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .o,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .ow { color: #b7c0ce; font-weight: normal; text-decoration: none; }
+
+/* tag */
+.article-content .codeblock .hl-code .nt { color: #b65a4c; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .nt { color: #ee9e9a; font-weight: normal; text-decoration: none; }
+
+/* punct */
+.article-content .codeblock .hl-code .p { color: #6b7380; font-weight: normal; text-decoration: none; }
+:root[data-theme="dark"] .article-content .codeblock .hl-code .p { color: #b0bac7; font-weight: normal; text-decoration: none; }
+
+.article-content .codeblock .hl-code .c,
+.article-content .codeblock .hl-code .cm,
+.article-content .codeblock .hl-code .c1,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .c,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .cm,
+:root[data-theme="dark"] .article-content .codeblock .hl-code .c1 { font-style: italic; }
