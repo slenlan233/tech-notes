@@ -1,0 +1,18 @@
+/* Local-only admin styles. This file is served by admin.py, not copied to site/. */
+.tn-admin-trigger {margin-left:auto;padding:3px 9px;background:transparent;border:1px solid var(--border,#dde1e8);border-radius:7px;color:var(--muted,#687589);font-size:11px;cursor:pointer}
+.tn-admin-trigger:hover,.tn-admin-trigger:focus-visible{border-color:#4263eb;color:#4263eb}
+.tn-admin-panel{margin:8px 0 13px;padding:10px;border:1px solid var(--border,#dde1e8);border-radius:10px;background:var(--surface,#fff)}
+.tn-admin-panel[hidden]{display:none}
+.tn-admin-help{font-size:11px;line-height:1.6;color:var(--muted,#687589);margin-bottom:9px}
+.tn-admin-buttons{display:flex;flex-wrap:wrap;gap:5px}
+.tn-admin-button{font:inherit;font-size:11px;cursor:pointer;color:var(--text,#202733);background:var(--surface,#fff);border:1px solid var(--border,#dce1e7);border-radius:6px;padding:6px 9px}
+.tn-admin-button:hover:not(:disabled){border-color:#4263eb;color:#4263eb}
+.tn-admin-button:disabled{opacity:.42;cursor:not-allowed}
+.tn-admin-publish:not(:disabled){color:#fff;background:#4263eb;border-color:#4263eb}
+.tn-local-state{font-size:11px;line-height:1.5;margin-top:9px;white-space:pre-wrap;overflow-wrap:anywhere;color:var(--muted,#677485)}
+.tn-local-state[data-kind="error"]{color:#b33338}.tn-local-state[data-kind="success"]{color:#237c55}
+.nav-items.tn-admin-sorting .nav-link[data-sort-key]{cursor:grab;user-select:none;-webkit-user-select:none;transition:background .11s;color:var(--text,#202733)}
+.nav-items.tn-admin-sorting .nav-link[data-sort-key]:hover{background:rgba(115,122,135,.13)!important}
+.nav-items.tn-admin-sorting .nav-link.tn-dragging{opacity:.42;background:rgba(115,122,135,.18)!important;cursor:grabbing}
+.nav-items.tn-admin-sorting .nav-link.tn-insert-before{box-shadow:inset 0 3px #4263eb;background:rgba(115,122,135,.11)}
+.nav-items.tn-admin-sorting .nav-link.tn-insert-after{box-shadow:inset 0 -3px #4263eb;background:rgba(115,122,135,.11)}

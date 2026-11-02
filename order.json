@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "parents": {
+    "": [
+      "folder:AI 与大模型",
+      "folder:Java 后端",
+      "folder:数据库与中间件",
+      "folder:计算机基础"
+    ],
+    "AI 与大模型": [
+      "folder:AI 与大模型/大模型基础"
+    ],
+    "AI 与大模型/大模型基础": [
+      "note:posts/AI-与大模型-大模型基础-Agent-Coding-框架-6ad4ba/index.html",
+      "note:posts/AI-与大模型-大模型基础-强化学习-9039cb/index.html",
+      "note:posts/AI-与大模型-大模型基础-RLHF-基于人类反馈的强化学习-Reinforcement-Learning--6177e1/index.html",
+      "note:posts/AI-与大模型-大模型基础-分布式计算-74e0c9/index.html",
+      "note:posts/AI-与大模型-大模型基础-Quantization-量化-93580d/index.html",
+      "note:posts/AI-与大模型-大模型基础-Fine-tune-微调-872535/index.html",
+      "note:posts/AI-与大模型-大模型基础-Transformer-252fd1/index.html"
+    ],
+    "Java 后端": [
+      "folder:Java 后端/Java 底层机制与原理深挖",
+      "folder:Java 后端/JVM",
+      "folder:Java 后端/Netty",
+      "folder:Java 后端/并发编程"
+    ],
+    "Java 后端/Java 底层机制与原理深挖": [
+      "note:posts/Java-后端-Java-底层机制与原理深挖-Java-54f214/index.html",
+      "note:posts/Java-后端-Java-底层机制与原理深挖-JMM-50eb64/index.html",
+      "note:posts/Java-后端-Java-底层机制与原理深挖-Spring-2115d9/index.html",
+      "note:posts/Java-后端-Java-底层机制与原理深挖-并发编程-a13d67/index.html"
+    ],
+    "Java 后端/JVM": [
+      "note:posts/Java-后端-JVM-第2章-Java内存区域与内存溢出异常-html-ff9c33/index.html",
+      "note:posts/Java-后端-JVM-第3章-垃圾收集器与内存分配策略-html-471e33/index.html",
+      "note:posts/Java-后端-JVM-第4-5章-虚拟机性能监控-故障处理工具和调优-html-a1b1bc/index.html",
+      "note:posts/Java-后端-JVM-第6章-类文件结构-html-2d9ff8/index.html",
+      "note:posts/Java-后端-JVM-第7章-虚拟机类加载机制-html-d5ed73/index.html",
+      "note:posts/Java-后端-JVM-第8章-虚拟机字节码执行引擎-html-b0cf29/index.html"
+    ],
+    "Java 后端/Netty": [
+      "note:posts/Java-后端-Netty-Netty-基础知识-f385c3/index.html",
+      "note:posts/Java-后端-Netty-Netty-权威指南-3a953e/index.html"
+    ],
+    "Java 后端/并发编程": [
+      "note:posts/Java-后端-并发编程-第2章-进程和线程-3eace3/index.html",
+      "note:posts/Java-后端-并发编程-第3章-Java线程-7ec62c/index.html",
+      "note:posts/Java-后端-并发编程-第4章-共享模型之管程-Monitor-a5e21a/index.html",
+      "note:posts/Java-后端-并发编程-synchronized-锁升级-06444e/index.html",
+      "note:posts/Java-后端-并发编程-第5章-Java内存模型-29400d/index.html",
+      "note:posts/Java-后端-并发编程-第6章-共享模型之无锁-8ded93/index.html",
+      "note:posts/Java-后端-并发编程-第8章-并发工具-dcbe9c/index.html"
+    ],
+    "数据库与中间件": [
+      "folder:数据库与中间件/MySQL",
+      "folder:数据库与中间件/Redis"
+    ],
+    "数据库与中间件/MySQL": [
+      "note:posts/数据库与中间件-MySQL-第1章-MySQL-架构与历史-b2929a/index.html",
+      "note:posts/数据库与中间件-MySQL-第4章-Schema-与数据类型优化-b4d29e/index.html",
+      "note:posts/数据库与中间件-MySQL-第5章-创建高性能的索引-1d4740/index.html",
+      "note:posts/数据库与中间件-MySQL-第6章-查询性能优化-8c4987/index.html"
+    ],
+    "数据库与中间件/Redis": [
+      "note:posts/数据库与中间件-Redis-Redis-1cfbf6/index.html"
+    ],
+    "计算机基础": [
+      "folder:计算机基础/算法与数据结构",
+      "folder:计算机基础/计算机网络"
+    ],
+    "计算机基础/算法与数据结构": [
+      "note:posts/计算机基础-算法与数据结构-LeetCode-Hot-100-笔记-788d2f/index.html"
+    ],
+    "计算机基础/计算机网络": [
+      "note:posts/计算机基础-计算机网络-HTTP协议-ee42a3/index.html",
+      "note:posts/计算机基础-计算机网络-互联网协议-30f10b/index.html",
+      "note:posts/计算机基础-计算机网络-TCP连接的建立和释放-402166/index.html",
+      "note:posts/计算机基础-计算机网络-数据链路层-ea1370/index.html",
+      "note:posts/计算机基础-计算机网络-IP协议-ARP协议-RARP协议-c89c52/index.html",
+      "note:posts/计算机基础-计算机网络-ICMP协议-Ping-Traceroute-9777ba/index.html",
+      "note:posts/计算机基础-计算机网络-TCP分段与IP分片-ab4667/index.html",
+      "note:posts/计算机基础-计算机网络-UDP协议-1fe1a2/index.html",
+      "note:posts/计算机基础-计算机网络-TCP协议-b8c3c8/index.html",
+      "note:posts/计算机基础-计算机网络-TCP的交互数据流和成块数据流-99b411/index.html",
+      "note:posts/计算机基础-计算机网络-TCP的流量控制机制-504a4f/index.html",
+      "note:posts/计算机基础-计算机网络-TCP中的四大定时器-28ec2f/index.html",
+      "note:posts/计算机基础-计算机网络-TCP的拥塞控制机制-ed115d/index.html"
+    ]
+  }
+}

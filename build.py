@@ -465,7 +465,7 @@ def import_notes():
     return items
 
 
-def build_nav(notes, root_prefix):
+def build_nav_original(notes, root_prefix):
     """Create a collapsible folder tree from incoming/ directory names."""
     def new_node():
         return {'children': {}, 'notes': []}
@@ -498,6 +498,13 @@ def build_nav(notes, root_prefix):
         return len(node['notes']) + sum(count_articles(c) for c in node['children'].values())
 
     return render(tree)
+
+
+# TECH_NOTES_FEATURES_V1
+from site_features import ordered_notes, build_nav as build_nav_features, pager_html, order_manifest
+
+def build_nav(notes, root_prefix):
+    return build_nav_features(notes, root_prefix)
 
 
 def layout(title, content, notes, root_prefix='', active_url=None, toc=''):
@@ -546,12 +553,14 @@ def main():
     if SITE.exists():
         shutil.rmtree(SITE)
     POSTS.mkdir(parents=True)
-    for name in ('style.css', 'app.js'):
+    for name in ('style.css', 'app.js', 'enhancements.css', 'enhancements.js'):
         shutil.copy2(TEMPLATES / name, SITE / name)
     # Bundle math renderer locally so exported HTML works with no internet.
     shutil.copytree(TEMPLATES / 'mathjax', SITE / 'mathjax')
     notes = import_notes()
+    notes = ordered_notes(notes)
     write_search_index(notes)
+    (SITE / "order-manifest.json").write_text(json.dumps(order_manifest(notes), ensure_ascii=False, indent=2), encoding="utf-8")
     groups = defaultdict(list)
     for note in notes:
         groups[note['category']].append(note)
@@ -565,6 +574,7 @@ def main():
         relative_depth = len(Path(note['url']).parts) - 1
         prefix = '../' * relative_depth
         body = f'<div class="crumb"><a href="{prefix}index.html">首页</a><span>/</span>{html.escape(note["category"])}</div><div class="article-heading"><div class="eyebrow">{html.escape(note["category"])}</div></div><div class="article-content">{article}</div><div class="article-end"><a href="{prefix}index.html">← 返回全部文章</a></div>'
+        body = body.replace('<div class="article-end">', pager_html(note, notes, prefix) + '<div class="article-end">', 1)
         (note['folder'] / 'index.html').write_text(layout(note['title'], body, notes, prefix, note['url'], toc), encoding='utf8')
     if FAILED_IMAGES:
         missing = [{'url':url,'name':name} for url,name in sorted(FAILED_IMAGES.items())]
