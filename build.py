@@ -19,6 +19,7 @@ from mubu_rescue import create_rescue_page
 
 try:
     from markdown_it import MarkdownIt
+    from mdit_py_plugins.dollarmath import dollarmath_plugin
     from pygments import lex, format as pygments_format
     from pygments.formatters import HtmlFormatter
     from pygments.token import Keyword, Name, Text, Punctuation
@@ -34,6 +35,26 @@ SITE = ROOT / 'site'
 POSTS = SITE / 'posts'
 TEMPLATES = ROOT / 'templates'
 md = MarkdownIt('default', {'html': False, 'linkify': False, 'typographer': True})
+
+# TECH_NOTES_DOLLARMATH_FIX_V1
+# Markdown must recognize math blocks BEFORE interpreting an isolated '=' as
+# a Setext heading or interpreting TeX underscores as Markdown formatting.
+# No source note/ZIP is rewritten: MathJax renders the resulting delimited text.
+def _math_for_mathjax(content: str, options: dict) -> str:
+    latex = html.escape(content, quote=False)
+    if options.get('display_mode'):
+        return '\\[' + latex + '\\]'
+    return '\\(' + latex + '\\)'
+
+md.use(
+    dollarmath_plugin,
+    renderer=_math_for_mathjax,
+    allow_blank_lines=True,
+    # Stand-alone $$ blocks come before inline parsing; don't turn $$ in
+    # ordinary paragraphs into <div> nested inside a <p>.
+    double_inline=False,
+)
+
 CODE_FORMATTER = HtmlFormatter(nowrap=True, cssclass='highlight')
 PLAIN_LANGUAGES = {'text', 'txt', 'plaintext', 'plain', 'none', 'output'}
 
